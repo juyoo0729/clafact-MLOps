@@ -38,3 +38,17 @@ ClaFact의 FlyHermes MLOps 작업물을 안전하게 교환하기 위한 저장�
 - 지원하지 않는 제공자이면: `CLAIM_PROVIDER_UNSUPPORTED`
 
 두 경우 모두 회귀 테스트와 RSS 실행 전에 `HOLD`로 멈춥니다. 키 값은 보고서에 포함하지 않습니다.
+
+## 반자동 개선
+
+`core/semiauto_improvement.py`와 `tools/run_semiauto_improvement.py`는 다음 흐름을 강제합니다.
+
+`실패 분류 → Gold 확인 → 개선 후보 1건 → 사람 승인 → dev 평가 → 사람 승격 검토`
+
+- 설정·키·테스트 장애는 학습하지 않고 먼저 복구합니다.
+- 새 RSS 결과는 정답 데이터로 사용하지 않습니다.
+- 고정 R2 dev Gold의 text-free 오류 요약만 개선 후보 생성에 사용합니다.
+- 잠긴 test, 코드 변경, 모델 승격, 배포는 자동 실행하지 않습니다.
+- 상태 파일은 불변으로 저장해 승인·평가 기준이 나중에 바뀌지 않게 합니다.
+
+자세한 실행 순서는 [반자동 개선 구조](docs/SEMIAUTO_IMPROVEMENT.md)를 확인합니다.
