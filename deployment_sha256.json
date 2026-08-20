@@ -1,6 +1,6 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 19,
+  "file_count": 20,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
@@ -41,6 +41,11 @@
       "path": "docs/reference/18_AUTONOMOUS_MLOPS_LOOP.md",
       "sha256": "5e40009eff39eb753942a901c4ccc34a821207c59ea1cbf9b8c1f6bf492a96a1",
       "bytes": 8501
+    },
+    {
+      "path": "tests/goldset/fixtures/pilot20_r2_frozen_gold_claims_v1.json",
+      "sha256": "54e8232518c723fe2723b39b65237e4e69181b54b42cd1c41d51852cb36a326f",
+      "bytes": 13266
     },
     {
       "path": "tests/unit/test_gold_replay.py",
