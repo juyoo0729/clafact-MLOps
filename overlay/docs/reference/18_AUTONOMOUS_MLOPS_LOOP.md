@@ -142,6 +142,26 @@ scope만 남긴다. 기사 원문·제목·URL, feed 이름, raw provider/KOSIS 
 기록하지 않는다. 실제 scheduler 등록 기능은 controller에 없으며, 세 번의 수동 cycle 검토와 별도 승인
 전에는 scheduling 후보로도 승격하지 않는다.
 
+### 저장 산출물 기반 실시간 스냅샷
+
+`tools/run_live_evaluation_snapshot.py`는 최신 운영 cycle과 저장된 Gold 평가를 한 번 읽어 새 스냅샷을
+만든다. 네트워크나 모델 API를 호출하지 않으며, 최신 `pipeline_run_id`와 동일한 post-run Gold 평가만
+운영 결과 옆에 표시한다. 연결되지 않은 과거 평가 수치는 복사하지 않고
+`POST_RUN_EVALUATION_NOT_LINKED_TO_LATEST_RUN`으로 남긴다. Gold replay는 원시 기사 end-to-end 정확도가
+아닌 `CONDITIONAL_REPLAY_NOT_END_TO_END` 구역에 별도로 표시한다.
+
+```sh
+/opt/data/clafact_state/venvs/clafact-auto/bin/python \
+  tools/run_live_evaluation_snapshot.py \
+  --state-root /opt/data/clafact_state \
+  --snapshot-id <new_snapshot_id>
+```
+
+산출물은 `/opt/data/clafact_state/live_evaluation_snapshots/<snapshot_id>/`에 생성된다. 같은 ID가 있으면
+중단하고 덮어쓰지 않는다. `live_evaluation_snapshot.json`, `summary.txt`, `sha256_manifest.json`만 만들며
+RSS 원문·기사 URL·비밀값·로컬 경로를 복사하지 않는다. 이 명령은 on-demand 조회이므로 scheduler나
+무한 반복을 등록하지 않는다.
+
 ## 4. Hermes 역할과 사람 역할
 
 | 주체 | 할 일 | 하지 않는 일 |
