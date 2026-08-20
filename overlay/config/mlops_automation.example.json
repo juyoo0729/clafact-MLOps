@@ -1,0 +1,70 @@
+{
+  "schema_version": "clafact_mlops_automation_controller_v1",
+  "scheduling": {
+    "enabled": false,
+    "policy": "manual_bounded_runs_only"
+  },
+  "controller_output_root": "data/mlops_automation_runs",
+  "modes": {
+    "operational_cycle": {
+      "enabled": false,
+      "quality_gate_report": "data/mlops_operational_state/quality_gates/<quality_gate_id>.json",
+      "rss_approved": false,
+      "approved_rss_config": "config/<explicitly_approved_rss_config>.json",
+      "state_root": "data/mlops_operational_state",
+      "max_records": 5,
+      "through": "r4",
+      "use_configured_extractor": false,
+      "use_kosis_live_discovery": false,
+      "use_kosis_api": false,
+      "prefer_api": false
+    },
+    "post_run_gold_evaluation": {
+      "enabled": false,
+      "run_manifest": "data/mlops_operational_state/runs/<pipeline_run_id>/run_manifest.json",
+      "r1_gold": "<R1_Gold30.csv>",
+      "r2_gold": "data/model_benchmarks/r2_12slot_v2/gold.jsonl",
+      "r2_predictions": "data/model_benchmarks/r2_12slot_v2/runs/<saved_dev_predictions>.jsonl",
+      "r2_split": "dev",
+      "r3_predictions": "<saved_r3_predictions>.jsonl",
+      "r4_predictions": "<saved_r4_predictions>.jsonl",
+      "gold20_fixture": "tests/goldset/fixtures/pilot20.json",
+      "gold20_routes": "tests/goldset/fixtures/pilot20_expected_routes.json",
+      "gold20_route_report": "data/goldset_reports/pilot20_route_report.json",
+      "evaluation_root": "data/gold_evaluations",
+      "evaluation_id": "<new_post_run_evaluation_id>"
+    },
+    "gold_replay_evaluation": {
+      "enabled": false,
+      "run_id": "<new_gold_replay_run_id>",
+      "replay_run_root": "data/gold_replay_runs",
+      "r1_gold": "<R1_Gold30.csv>",
+      "frozen_r2_claims": "tests/goldset/fixtures/pilot20_r2_frozen_gold_claims_v1.json",
+      "concepts": "data/semantic_standard/seed_concepts.json",
+      "catalog": "data/kosis_catalog/catalog_350.json",
+      "period_snapshot": "data/kosis_catalog/period_availability/period_availability_v1.json",
+      "snapshot_dir": "data/kosis_snapshots",
+      "gold20_fixture": "tests/goldset/fixtures/pilot20.json",
+      "gold20_routes": "tests/goldset/fixtures/pilot20_expected_routes.json",
+      "gold20_route_report": "data/goldset_reports/pilot20_route_report.json",
+      "operational_r1_candidates": "data/mlops_operational_state/runs/<pipeline_run_id>/r1/r1_candidates.jsonl",
+      "evaluation_root": "data/gold_evaluations",
+      "evaluation_id": "<new_gold_replay_evaluation_id>"
+    },
+    "r2_dev_experiment": {
+      "enabled": false,
+      "quality_gate_report": "data/mlops_operational_state/quality_gates/<quality_gate_id>.json",
+      "approved_single_change": false,
+      "experiment_id": "<new_r2_dev_experiment_id>",
+      "provider": "openai",
+      "expected_model": "<configured_model_id>",
+      "prompt_version": "<approved_prompt_version>",
+      "change_reason": "<one approved change only>",
+      "input": "data/model_benchmarks/r2_12slot_v2/input.jsonl",
+      "gold": "data/model_benchmarks/r2_12slot_v2/gold.jsonl",
+      "output_root": "data/model_benchmarks/r2_12slot_v2/runs",
+      "split": "dev",
+      "smoke_limit": 0
+    }
+  }
+}

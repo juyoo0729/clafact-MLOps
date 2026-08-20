@@ -1,0 +1,81 @@
+{
+  "schema_version": "clafact_flyhermes_overlay_v1",
+  "file_count": 15,
+  "files": [
+    {
+      "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
+      "sha256": "0d7516c3550e3e3f8d77f696598f3a0a7ae54340da20149f64279bcdb1f6f348",
+      "bytes": 4047
+    },
+    {
+      "path": "config/mlops_automation.example.json",
+      "sha256": "b2c5372f00b89c07594eea88e302b18d0e9e32a690bb875ba308dd526bed55be",
+      "bytes": 3196
+    },
+    {
+      "path": "core/mlops_automation_controller.py",
+      "sha256": "1a30f03d5e9d54085a2ed046aea2f7ce85e26b574e5cbe98228a4625a7ab8c85",
+      "bytes": 31504
+    },
+    {
+      "path": "core/mlops_gold_evaluation.py",
+      "sha256": "4ce53471989d3690e64fae58f45878b4901bc53ea460743deee15aa5492c2381",
+      "bytes": 32573
+    },
+    {
+      "path": "core/r1_article_pipeline.py",
+      "sha256": "9bbdad12018cec161f4e9258e60eb138489521dc73d8bf1aa2cb52f51c0d6e70",
+      "bytes": 4174
+    },
+    {
+      "path": "core/r2_claim_pipeline.py",
+      "sha256": "f096527e10dad86709936a1d483848de3b4133a09ab6b870acdfc74bfc2a743c",
+      "bytes": 5622
+    },
+    {
+      "path": "docs/reference/18_AUTONOMOUS_MLOPS_LOOP.md",
+      "sha256": "5e40009eff39eb753942a901c4ccc34a821207c59ea1cbf9b8c1f6bf492a96a1",
+      "bytes": 8501
+    },
+    {
+      "path": "tests/unit/test_mlops_automation_controller.py",
+      "sha256": "29564ebc875f3f1a03d8ebcf7017b25db4af2ee8c1e1b1a10357b9795c034e76",
+      "bytes": 12613
+    },
+    {
+      "path": "tests/unit/test_mlops_gold_evaluation.py",
+      "sha256": "ef199506b86af4f9cf2bbd479e3cbec66c7636e757f18b3d0a6ce0e94c2ec1bd",
+      "bytes": 6990
+    },
+    {
+      "path": "tests/unit/test_r1_article_pipeline.py",
+      "sha256": "e8a42698d8fd554d4cdd7c2d67836e8694a1f3e65eb5643973f6ad36e94816e7",
+      "bytes": 1658
+    },
+    {
+      "path": "tests/unit/test_r2_claim_pipeline.py",
+      "sha256": "20c56d95bf77b7c21d03fd0ded185d0281ea86377e74545139e42c9714863e1c",
+      "bytes": 2676
+    },
+    {
+      "path": "tests/unit/test_run_mlops_gold_evaluation.py",
+      "sha256": "e72a7ad0599a0986332061c9053aa8f9abbc09b006b9b08766132d7123e19b1c",
+      "bytes": 1867
+    },
+    {
+      "path": "tools/run_gold_replay_evaluation.py",
+      "sha256": "03d1b686715baea05134c9e7833f4c304c3b0ac2391e850801ae9341b1f5aef1",
+      "bytes": 8223
+    },
+    {
+      "path": "tools/run_mlops_automation.py",
+      "sha256": "caa6359cdcda0bf0cec9389c06dca16a3df3ea847dbf267c11f179e90eed0111",
+      "bytes": 3963
+    },
+    {
+      "path": "tools/run_mlops_gold_evaluation.py",
+      "sha256": "d1746107b6fa3be7971d164138c75df7320780ada395b404b4bc6e51a9bedcfa",
+      "bytes": 16984
+    }
+  ]
+}
