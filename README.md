@@ -26,3 +26,15 @@ ClaFact의 FlyHermes MLOps 작업물을 안전하게 교환하기 위한 저장�
 변경은 로컬에서 검토한 뒤 별도 브랜치와 Pull Request로 교환합니다.
 
 구조화 제공자는 `.env.example`처럼 명시적으로 선택합니다. 실제 키 값은 이 저장소에 저장하지 않습니다.
+
+## 실패 사전 차단
+
+`core/`, `tools/`, `tests/`의 파일은 FlyHermes에 배포된 `clafact-auto`의 같은 경로에 선택적으로 반영하는 MLOps 안전 오버레이입니다.
+
+품질 게이트는 선택된 구조화 제공자와 비밀키가 일치하는지 RSS 실행 전에 확인합니다.
+
+- 지원 제공자: `openai`, `hcx`
+- 제공자에 맞는 키가 없으면: `CLAIM_PROVIDER_SECRET_MISSING`
+- 지원하지 않는 제공자이면: `CLAIM_PROVIDER_UNSUPPORTED`
+
+두 경우 모두 회귀 테스트와 RSS 실행 전에 `HOLD`로 멈춥니다. 키 값은 보고서에 포함하지 않습니다.
