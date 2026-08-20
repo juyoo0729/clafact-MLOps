@@ -1,0 +1,131 @@
+{
+  "schema_version": "clafact_flyhermes_overlay_v1",
+  "file_count": 25,
+  "files": [
+    {
+      "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
+      "sha256": "0d7516c3550e3e3f8d77f696598f3a0a7ae54340da20149f64279bcdb1f6f348",
+      "bytes": 4047
+    },
+    {
+      "path": "config/mlops_automation.example.json",
+      "sha256": "b2c5372f00b89c07594eea88e302b18d0e9e32a690bb875ba308dd526bed55be",
+      "bytes": 3196
+    },
+    {
+      "path": "core/gold_replay.py",
+      "sha256": "f95c2dfe6681fe3e19eb557e440c7bd889cc9d38c445e3efec1bce339f1f603b",
+      "bytes": 14159
+    },
+    {
+      "path": "core/live_evaluation_snapshot.py",
+      "sha256": "bf34d5b1b4318945b393461fab6ac7606bf98c21790f74e717a2cbfedfed5867",
+      "bytes": 16890
+    },
+    {
+      "path": "core/mlops_automation_controller.py",
+      "sha256": "1a30f03d5e9d54085a2ed046aea2f7ce85e26b574e5cbe98228a4625a7ab8c85",
+      "bytes": 31504
+    },
+    {
+      "path": "core/mlops_gold_evaluation.py",
+      "sha256": "4ce53471989d3690e64fae58f45878b4901bc53ea460743deee15aa5492c2381",
+      "bytes": 32573
+    },
+    {
+      "path": "core/r1_article_pipeline.py",
+      "sha256": "9bbdad12018cec161f4e9258e60eb138489521dc73d8bf1aa2cb52f51c0d6e70",
+      "bytes": 4174
+    },
+    {
+      "path": "core/r2_claim_pipeline.py",
+      "sha256": "f096527e10dad86709936a1d483848de3b4133a09ab6b870acdfc74bfc2a743c",
+      "bytes": 5622
+    },
+    {
+      "path": "docs/reference/18_AUTONOMOUS_MLOPS_LOOP.md",
+      "sha256": "702643f1d03f63f862fba8bd93b5dbe1d41cbb949aa3a5733cf44cc86967d08b",
+      "bytes": 9690
+    },
+    {
+      "path": "tests/goldset/fixtures/pilot20_r2_frozen_gold_claims_v1.json",
+      "sha256": "54e8232518c723fe2723b39b65237e4e69181b54b42cd1c41d51852cb36a326f",
+      "bytes": 13266
+    },
+    {
+      "path": "tests/unit/test_flyhermes_quality_gate_wrapper.py",
+      "sha256": "f2132f49b5f423d2e6211fa608d398351b12845fe8007b092a15c4c9de4516dd",
+      "bytes": 459
+    },
+    {
+      "path": "tests/unit/test_gold_replay.py",
+      "sha256": "6ee420e2ac7fb4619ccdd42e153086f22a328fe0b286976cc2b103e3bb78b5d6",
+      "bytes": 14222
+    },
+    {
+      "path": "tests/unit/test_live_evaluation_snapshot.py",
+      "sha256": "6cedee249df8d219b87a9464037ac729b58d6cbdd62a7f53eb490ab325ff955d",
+      "bytes": 7859
+    },
+    {
+      "path": "tests/unit/test_mlops_automation_controller.py",
+      "sha256": "29564ebc875f3f1a03d8ebcf7017b25db4af2ee8c1e1b1a10357b9795c034e76",
+      "bytes": 12613
+    },
+    {
+      "path": "tests/unit/test_mlops_gold_evaluation.py",
+      "sha256": "ef199506b86af4f9cf2bbd479e3cbec66c7636e757f18b3d0a6ce0e94c2ec1bd",
+      "bytes": 6990
+    },
+    {
+      "path": "tests/unit/test_r1_article_pipeline.py",
+      "sha256": "e8a42698d8fd554d4cdd7c2d67836e8694a1f3e65eb5643973f6ad36e94816e7",
+      "bytes": 1658
+    },
+    {
+      "path": "tests/unit/test_r2_claim_pipeline.py",
+      "sha256": "20c56d95bf77b7c21d03fd0ded185d0281ea86377e74545139e42c9714863e1c",
+      "bytes": 2676
+    },
+    {
+      "path": "tests/unit/test_run_gold_replay.py",
+      "sha256": "1e9ead39f0a5c819141bfc19fe5041f67456a4c40b92e2f18ad5b5d79deaee8c",
+      "bytes": 4712
+    },
+    {
+      "path": "tests/unit/test_run_mlops_gold_evaluation.py",
+      "sha256": "e72a7ad0599a0986332061c9053aa8f9abbc09b006b9b08766132d7123e19b1c",
+      "bytes": 1867
+    },
+    {
+      "path": "tools/run_flyhermes_quality_gate.sh",
+      "sha256": "187ead99908bad20c3dd67c0721122f3f20ad07b0ab8eb50e653f23b311b81b9",
+      "bytes": 664
+    },
+    {
+      "path": "tools/run_gold_replay_evaluation.py",
+      "sha256": "03d1b686715baea05134c9e7833f4c304c3b0ac2391e850801ae9341b1f5aef1",
+      "bytes": 8223
+    },
+    {
+      "path": "tools/run_gold_replay.py",
+      "sha256": "0cabdc6af43aedc24dbd306f432368837b7639f1856773ab4d21e5c0d2315203",
+      "bytes": 11665
+    },
+    {
+      "path": "tools/run_live_evaluation_snapshot.py",
+      "sha256": "8de38cba775c8ce1705f5d509eaf11b9c1cf78517e0104e4b232f783d7db7210",
+      "bytes": 1040
+    },
+    {
+      "path": "tools/run_mlops_automation.py",
+      "sha256": "caa6359cdcda0bf0cec9389c06dca16a3df3ea847dbf267c11f179e90eed0111",
+      "bytes": 3963
+    },
+    {
+      "path": "tools/run_mlops_gold_evaluation.py",
+      "sha256": "d1746107b6fa3be7971d164138c75df7320780ada395b404b4bc6e51a9bedcfa",
+      "bytes": 16984
+    }
+  ]
+}

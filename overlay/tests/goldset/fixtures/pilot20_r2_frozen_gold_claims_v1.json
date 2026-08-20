@@ -1,0 +1,330 @@
+[
+  {
+    "claim_id": "NEWS_B-023-A01",
+    "article_id": "NEWS_B-023",
+    "published_at": "2025-11-04",
+    "article_date_source": "tests/goldset/test_b023_multiitem_growth_e2e.py",
+    "transcription_note": "한 문장에 5개 품목의 독립 증감률이 있어 원자 Claim으로 확정하지 않고 HOLD로 전사한다.",
+    "claim": {
+      "source_sentence": "배추(-34.5%), 무(-40.5%) 등은 마이너스 물가 상승률을 보였지만, 쌀(21.3%), 사과(21.6%), 달걀(6.9%) 등은 여전히 전체 물가 상승률을 크게 웃돌았다.",
+      "parse_status": "HOLD",
+      "parse_reason": "R2_MULTI_VALUE_CONTEXT_UNRESOLVED"
+    }
+  },
+  {
+    "claim_id": "NEWS_B-030-A01",
+    "article_id": "NEWS_B-030",
+    "published_at": "",
+    "article_date_source": "NOT_DOCUMENTED_IN_GOLD_FIXTURE",
+    "transcription_note": "비교 주체(어떤 품목군의 상승률인지)가 문장 단독으로 확정되지 않아 HOLD로 전사한다.",
+    "claim": {
+      "source_sentence": "지난달 전체 소비자 물가 상승률(1.9%)보다 1.5%포인트 높다.",
+      "parse_status": "HOLD",
+      "parse_reason": "R2_SLOT_INPUT_REQUIRED"
+    }
+  },
+  {
+    "claim_id": "NEWS_B-001-A01",
+    "article_id": "NEWS_B-001",
+    "published_at": "2025-06-04",
+    "article_date_source": "tests/goldset/test_b001_cpi_direct_e2e.py",
+    "transcription_note": "지수 직접값(116.27)을 원자 Claim으로 전사한다. 전년동월비 1.9%는 별도 Claim으로 이 전사본에는 넣지 않는다.",
+    "claim": {
+      "source_sentence": "4일 통계청에 따르면 5월 소비자 물가 지수는 116.27(2020년을 100으로 본 상대적 지수)로 전년 동월 대비 1.9% 올랐다.",
+      "indicator": "소비자물가지수",
+      "value": 116.27,
+      "target_value_role": "CURRENT_VALUE",
+      "unit": "2020=100",
+      "time": "2025-05",
+      "frequency": "월",
+      "region": "전국",
+      "calculation": "DIRECT_VALUE",
+      "source_hint": "통계청",
+      "parse_status": "AUTO_OK"
+    }
+  },
+  {
+    "claim_id": "NEWS_B-002-A01",
+    "article_id": "NEWS_B-002",
+    "published_at": "",
+    "article_date_source": "NOT_DOCUMENTED_IN_GOLD_FIXTURE",
+    "transcription_note": "기여도(%p)는 보도자료 파생값이라 문장 단독 구조화를 확정하지 않는다.",
+    "claim": {
+      "source_sentence": "이번 소비자물가 상승률은 서비스의 기여도(1.35%p)가 가장 컸다.",
+      "parse_status": "HOLD",
+      "parse_reason": "R2_DERIVED_CONTRIBUTION_VALUE_UNSUPPORTED"
+    }
+  },
+  {
+    "claim_id": "KOSIS_SEED-016-A01",
+    "article_id": "KOSIS_SEED-016",
+    "published_at": "2025-02-06",
+    "article_date_source": "tests/goldset/test_seed016_difference_e2e.py",
+    "claim": {
+      "source_sentence": "지난달 건설업 취업자는 전년 동월 대비 16만9000명 감소하면서, 지난 2013년 관련 통계 작성 이래 최대 감소폭을 보였다.",
+      "indicator": "취업자 수",
+      "value": -169000,
+      "target_value_role": "CHANGE_VALUE",
+      "unit": "명",
+      "time": "2025-01",
+      "frequency": "월",
+      "region": "전국",
+      "dimension": {"산업": "건설업"},
+      "comparison": {"type": "YEAR_OVER_YEAR"},
+      "calculation": "DIFFERENCE",
+      "parse_status": "AUTO_OK"
+    }
+  },
+  {
+    "claim_id": "NEWS_B-027-A01",
+    "article_id": "NEWS_B-027",
+    "published_at": "2025-10-27",
+    "article_date_source": "tests/goldset/test_b027_multivalue_snapshot_e2e.py",
+    "claim": {
+      "source_sentence": "이 조사에 따르면 보건업 및 사회복지 서비스업 취업자는 302만7000명이었는데, 이 중 절반 이상인 159만4000명이 비거주 복지시설 운영업 취업자였다.",
+      "indicator": "취업자 수",
+      "value": 3027000,
+      "target_value_role": "CURRENT_VALUE",
+      "unit": "명",
+      "time": "2024 하반기",
+      "frequency": "반기",
+      "region": "전국",
+      "dimension": {"산업": "보건업 및 사회복지 서비스업"},
+      "calculation": "DIRECT_VALUE",
+      "parse_status": "AUTO_OK"
+    }
+  },
+  {
+    "claim_id": "NEWS_B-005-A01",
+    "article_id": "NEWS_B-005",
+    "published_at": "",
+    "article_date_source": "NOT_DOCUMENTED_IN_GOLD_FIXTURE",
+    "transcription_note": "대상 월·대상 집단이 문장 단독으로 복원되지 않아 HOLD로 전사한다.",
+    "claim": {
+      "source_sentence": "전체 비경제활동인구의 16.3%를 차지하며, 구성비는 지난해(15.8%)보다 0.5%p 상승했다.",
+      "parse_status": "HOLD",
+      "parse_reason": "R2_SLOT_INPUT_REQUIRED"
+    }
+  },
+  {
+    "claim_id": "NEWS_B-007-A01",
+    "article_id": "NEWS_B-007",
+    "published_at": "",
+    "article_date_source": "NOT_DOCUMENTED_IN_GOLD_FIXTURE",
+    "claim": {
+      "source_sentence": "지난달 청년층 실업률은 전체 연령대 실업률(3.1%)의 2.4배에 달한다.",
+      "indicator": "실업률",
+      "value": 2.4,
+      "target_value_role": "RATIO_VALUE",
+      "unit": "배",
+      "time": "2025-03",
+      "frequency": "월",
+      "region": "전국",
+      "population": "15~29세",
+      "comparison": {"basis": "전체 연령대 실업률"},
+      "calculation": "RATIO",
+      "parse_status": "AUTO_OK"
+    }
+  },
+  {
+    "claim_id": "KOSIS_SEED-020-A01",
+    "article_id": "KOSIS_SEED-020",
+    "published_at": "",
+    "article_date_source": "NOT_DOCUMENTED_IN_GOLD_FIXTURE",
+    "transcription_note": "사건 단위 피해 집계는 KOSIS 정기 통계 범위 밖이라 HOLD로 전사한다.",
+    "claim": {
+      "source_sentence": "이번 영남권 산불로 산림 4만8000ha가 불에 탔고, 농가 피해는 경북 지역의 5개 시·군(의성·안동·청송·영양·영덕)에서 주로 발생했다.",
+      "parse_status": "HOLD",
+      "parse_reason": "R2_EVENT_SCOPE_NOT_PERIODIC_STATISTIC"
+    }
+  },
+  {
+    "claim_id": "KOSIS_SEED-018-A01",
+    "article_id": "KOSIS_SEED-018",
+    "published_at": "",
+    "article_date_source": "NOT_DOCUMENTED_IN_GOLD_FIXTURE",
+    "transcription_note": "기준시점·조사 모집단이 문장 단독으로 확정되지 않아 HOLD로 전사한다.",
+    "claim": {
+      "source_sentence": "충북도 농가 6만7000곳 중 2만1300곳(31%)이 도시 농부를 활용했다.",
+      "parse_status": "HOLD",
+      "parse_reason": "R2_SLOT_INPUT_REQUIRED"
+    }
+  },
+  {
+    "claim_id": "KOSIS_SEED-003-A01",
+    "article_id": "KOSIS_SEED-003",
+    "published_at": "",
+    "article_date_source": "NOT_DOCUMENTED_IN_GOLD_FIXTURE",
+    "transcription_note": "17개 시·도 전수 비교가 필요한 복수 지역 카운트 Claim이라 단일 값 전사가 불가능해 HOLD로 전사한다.",
+    "claim": {
+      "source_sentence": "지역별로는 세종을 제외한 전국 16개 시·도에서 인구가 자연 감소했다.",
+      "parse_status": "HOLD",
+      "parse_reason": "R2_MULTI_REGION_COUNT_CLAIM_UNRESOLVED"
+    }
+  },
+  {
+    "claim_id": "KOSIS_SEED-005-A01",
+    "article_id": "KOSIS_SEED-005",
+    "published_at": "",
+    "article_date_source": "NOT_DOCUMENTED_IN_GOLD_FIXTURE",
+    "claim": {
+      "source_sentence": "사망자 수가 출생아 수를 웃돌아 인구는 9124명 자연 감소했다.",
+      "indicator": "인구 자연증가",
+      "value": -9124,
+      "target_value_role": "CURRENT_VALUE",
+      "unit": "명",
+      "time": "2024-11",
+      "frequency": "월",
+      "region": "전국",
+      "calculation": "DIRECT_VALUE",
+      "parse_status": "AUTO_OK"
+    }
+  },
+  {
+    "claim_id": "KOSIS_SEED-002-A01",
+    "article_id": "KOSIS_SEED-002",
+    "published_at": "",
+    "article_date_source": "NOT_DOCUMENTED_IN_GOLD_FIXTURE",
+    "claim": {
+      "source_sentence": "1인 가구는 2021년 700만 가구를 넘어선 지 3년 만에 800만 가구를 돌파했다.",
+      "indicator": "1인 가구 수",
+      "value": 8000000,
+      "target_value_role": "THRESHOLD_VALUE",
+      "unit": "가구",
+      "time": "2024",
+      "frequency": "년",
+      "region": "전국",
+      "calculation": "THRESHOLD",
+      "parse_status": "AUTO_OK"
+    }
+  },
+  {
+    "claim_id": "KOSIS_SEED-006-A01",
+    "article_id": "KOSIS_SEED-006",
+    "published_at": "2025-03-09",
+    "article_date_source": "tests/goldset/test_seed006_missing_asof_hold_e2e.py",
+    "claim": {
+      "source_sentence": "9일 인천시에 따르면 지난달 기준 인천시 주민등록인구는 302만7854명으로 집계됐다.",
+      "indicator": "주민등록인구",
+      "value": 3027854,
+      "target_value_role": "CURRENT_VALUE",
+      "unit": "명",
+      "time": "2025-02",
+      "frequency": "월",
+      "region": "인천",
+      "calculation": "DIRECT_VALUE",
+      "source_hint": "인천시",
+      "parse_status": "AUTO_OK"
+    }
+  },
+  {
+    "claim_id": "KOSIS_SEED-019-A01",
+    "article_id": "KOSIS_SEED-019",
+    "published_at": "2025-05-01",
+    "article_date_source": "tests/goldset/test_seed019_multi_calculation_e2e.py",
+    "transcription_note": "임가 수 증감률(-1.2%)만 원자 Claim으로 전사한다. 고령 인구 비율 변화는 별도 Claim으로 이 전사본에는 넣지 않는다.",
+    "claim": {
+      "source_sentence": "임가 수는 지난해 9만8000가구로 전년(9만9200가구) 대비 1.2% 줄었고,고령 인구 비율은 52.8%에서 56.4%로 3.6%포인트 높아졌다.",
+      "indicator": "임가 수",
+      "value": -1.2,
+      "target_value_role": "CHANGE_VALUE",
+      "unit": "%",
+      "time": "2024",
+      "frequency": "년",
+      "region": "전국",
+      "comparison": {"type": "YEAR_OVER_YEAR"},
+      "calculation": "GROWTH_RATE",
+      "parse_status": "AUTO_OK"
+    }
+  },
+  {
+    "claim_id": "NEWS_B-016-A01",
+    "article_id": "NEWS_B-016",
+    "published_at": "2025-05-01",
+    "article_date_source": "tests/goldset/test_b016_share_e2e.py",
+    "claim": {
+      "source_sentence": "다만 같은 기간고령 인구 비율은 48.0%에서 50.9%로 2.9%포인트 증가했다.",
+      "indicator": "어가 고령 인구 비율",
+      "value": 50.9,
+      "target_value_role": "SHARE_VALUE",
+      "unit": "%",
+      "time": "2024",
+      "frequency": "년",
+      "region": "전국",
+      "comparison": {"basis": "2023"},
+      "calculation": "SHARE",
+      "parse_status": "AUTO_OK"
+    }
+  },
+  {
+    "claim_id": "NEWS_B-003-A01",
+    "article_id": "NEWS_B-003",
+    "published_at": "2025-06-25",
+    "article_date_source": "tests/goldset/test_b003_rank_e2e.py",
+    "transcription_note": "1991년 이후 전 연도 4월 증감률 비교가 필요한 순위형 Claim이라 단일 값 전사가 불가능해 HOLD로 전사한다.",
+    "claim": {
+      "source_sentence": "출생아 수 증가율로 보면 1991년(8.7%) 이후 4월 기준 34년 만에 가장 높았다.",
+      "parse_status": "HOLD",
+      "parse_reason": "R2_RANK_HISTORY_CONTEXT_REQUIRED"
+    }
+  },
+  {
+    "claim_id": "NEWS_B-006-A01",
+    "article_id": "NEWS_B-006",
+    "published_at": "",
+    "article_date_source": "NOT_DOCUMENTED_IN_GOLD_FIXTURE",
+    "claim": {
+      "source_sentence": "지난달 물가 상승률이 2%를 기록하며 지난 1월(2.2%)에 이어 두 달 연속으로 2%대를 기록했다.",
+      "indicator": "소비자물가 상승률",
+      "value": 2.0,
+      "target_value_role": "CHANGE_VALUE",
+      "unit": "%",
+      "time": "2025-02",
+      "frequency": "월",
+      "region": "전국",
+      "comparison": {"type": "YEAR_OVER_YEAR"},
+      "calculation": "GROWTH_RATE",
+      "parse_status": "AUTO_OK"
+    }
+  },
+  {
+    "claim_id": "NEWS_B-008-A01",
+    "article_id": "NEWS_B-008",
+    "published_at": "2025-03-27",
+    "article_date_source": "pilot20.json comparison_formula (기사일 2025-03-27 명시)",
+    "claim": {
+      "source_sentence": "통계청이 이날 처음으로 공개한 어머니 연령별 출산율 자료에 따르면, 지난 1월 30~34세 여성 1000명당 출생아 수를 뜻하는 30대 초반 출산율은 81.1명을 기록했다.",
+      "indicator": "출산율",
+      "value": 81.1,
+      "target_value_role": "CURRENT_VALUE",
+      "unit": "해당 연령 여성 1천명당 명",
+      "time": "2025-01",
+      "frequency": "월",
+      "region": "전국",
+      "population": "30~34세 여성",
+      "calculation": "DIRECT_VALUE",
+      "source_hint": "통계청",
+      "parse_status": "AUTO_OK"
+    }
+  },
+  {
+    "claim_id": "NEWS_B-012-A01",
+    "article_id": "NEWS_B-012",
+    "published_at": "2025-04-09",
+    "article_date_source": "문장 내 '9일'과 '3월 고용동향' 결합 (2025-04-09)",
+    "transcription_note": "취업자 수 직접값(2858만9000명)만 원자 Claim으로 전사한다. 전년동월 대비 +19만3000명은 별도 Claim으로 이 전사본에는 넣지 않는다.",
+    "claim": {
+      "source_sentence": "9일 통계청이 발표한 '3월 고용동향'에 따르면, 지난 3월 취업자 수는 2858만9000명으로 전년 동월 대비 19만3000명 증가했다.",
+      "indicator": "취업자 수",
+      "value": 28589000,
+      "target_value_role": "CURRENT_VALUE",
+      "unit": "명",
+      "time": "2025-03",
+      "frequency": "월",
+      "region": "전국",
+      "calculation": "DIRECT_VALUE",
+      "source_hint": "통계청",
+      "parse_status": "AUTO_OK"
+    }
+  }
+]
