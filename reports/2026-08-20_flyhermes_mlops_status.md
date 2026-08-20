@@ -3,7 +3,7 @@
 ## 오늘 확인한 결과
 
 - 원격 수정본 반영 확인: `.env.example`과 운영체제 간 경로 호환 처리가 존재함
-- 원격 전체 테스트: `737 passed`, 실패 0건
+- 원격 전체 테스트: `746 passed`, 실패 0건
 - FlyHermes 사전검사: `PASS`
   - Python 실행 환경
   - 작업 폴더
@@ -12,7 +12,7 @@
   - 필요한 비밀키의 존재 여부
   - KOSIS HTTPS 연결
 - MLOps 품질 게이트: `PASS`
-- 최종 품질 보고서: `20260820T042609Z.json`
+- 최종 품질 보고서: `20260820T044944Z.json`
 
 비밀키는 값이 아니라 존재 여부만 확인했습니다.
 
@@ -39,12 +39,27 @@
 - 잘못된 조합 재현 결과: `HOLD / CLAIM_PROVIDER_SECRET_MISSING`
 - 지원하지 않는 제공자 설정: `HOLD / CLAIM_PROVIDER_UNSUPPORTED`
 - FlyHermes 제공자를 `openai`로 명시한 뒤 전체 품질 게이트 재실행: `PASS`
-- 최종 회귀 테스트: `737 passed`, 실패 0건
+- 최종 회귀 테스트: `746 passed`, 실패 0건
 - 기존 R1 후보를 사용한 R2 제한 검증: 입력 9건 중 1건 처리, `R3_READY` 1건, 구조화 HOLD 0건
 - 남은 8건은 검증 범위를 1건으로 제한해 `R2_BATCH_LIMIT_REACHED`로 대기
 - R2 실행 제공자: `openai`; 실제 추출기: `OpenAIFunctionClaimExtractor`
 
 R2 제한 검증 결과는 `HOLD`이지만, 이는 실패가 아니라 미처리 8건을 안전하게 남긴 상태입니다. 새 RSS는 다시 수집하지 않았고 키 값도 읽거나 기록하지 않았습니다.
+
+## 반자동 개선 구조
+
+- 운영 실패 분류: 설정·키·테스트·제공자 장애는 학습하지 않고 `REPAIR_REQUIRED`로 분리
+- 개선 후보 생성: 고정 R2 dev Gold의 text-free 오류 요약에서 슬롯 한 종류만 선택
+- 사람 승인: 한 실험의 provider·model·prompt version·변경 범위·사유 코드와 기준선 점수를 불변 기록
+- dev 평가: 응답률 95% 이상, 전체 12슬롯 macro accuracy 개선, parse-status macro F1 비하락을 확인
+- 평가를 통과해도 `PROMOTION_REVIEW_REQUIRED`에서 중단
+- 잠긴 test, 코드 변경, 모델 승격, 배포는 별도 승인 없이는 실행하지 않음
+
+FlyHermes에서 새 구조의 단위 및 CLI 테스트 13건이 통과했고, 전체 품질 게이트는 `746 passed`, 실패 0건으로 `PASS`했습니다.
+
+기존 운영 실패 요약은 `REPAIR_REQUIRED`로 분류됐으며 `automatic_training_allowed=false`가 기록됐습니다. 제공자 설정 문제는 이미 복구하고 전체 품질 게이트를 통과했습니다.
+
+고정 R2 dev Gold 오류 요약에서 최초 개선 후보 `r2-dev-20260820-indicator-001`을 만들었습니다. 대상 슬롯은 `indicator`, 관측 오류는 227건이며 현재 상태는 `AWAITING_HUMAN_APPROVAL`입니다. 아직 실험·코드 변경·test·승격은 실행하지 않았습니다.
 
 ## 이전 제한 실행 상태 — 2026-08-19
 
