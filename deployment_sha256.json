@@ -1,11 +1,17 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 26,
+  "file_count": 28,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
-      "sha256": "036ba6cfb23866db3271929ab92de5c271ea33afaf35df987da7402199864650",
-      "bytes": 4459,
+      "sha256": "fe097953a97d19c145cd30582f21d61b3315507d08cc93dadfd16fbc07b87271",
+      "bytes": 6139,
+      "executable": false
+    },
+    {
+      "path": "config/hermes/clafact_bootcamp_learning_lab_prompt.md",
+      "sha256": "ef86177375b5ed0d4adf925be51d1130970a91f70a01168353ab3f761e005204",
+      "bytes": 3727,
       "executable": false
     },
     {
@@ -52,8 +58,14 @@
     },
     {
       "path": "docs/reference/18_AUTONOMOUS_MLOPS_LOOP.md",
-      "sha256": "a97afde497b4c51c1aa4f75284c159f7bcac17d917958c07fe1f7c251fc1db39",
-      "bytes": 11361,
+      "sha256": "12077b2e17e23b54479a5187dec6c0af7166612236a960140614f8f2cffc8729",
+      "bytes": 12734,
+      "executable": false
+    },
+    {
+      "path": "docs/reference/19_BOOTCAMP_EDUCATIONAL_DIRECTION.md",
+      "sha256": "3bca2b8300e2bb255196f32798916ca78a3e7c6b1a44cde5173752191196a17c",
+      "bytes": 8343,
       "executable": false
     },
     {

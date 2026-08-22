@@ -1,23 +1,28 @@
-# CLAFACT-AUTO: 자동 수집·검증·점수 개선 반복 구조
+# CLAFACT-AUTO: 부트캠프 학습·평가 반복 구조
 
 ## 목표
 
-CLAFACT의 자동화 목표는 다음 두 반복을 연결하는 것이다.
+CLAFACT 자동화의 1차 목표는 서비스를 무인 운영하는 것이 아니라, 저장된 증거로 파이프라인의
+한 구간을 진단하고 개선 과정을 재현하는 것이다. 다음 두 반복은 연결하되 우선순위가 다르다.
 
 ```text
-승인 RSS -> 기사 입력 -> R1 -> R2 -> R3 -> R4/KOSIS 대조 -> 운영 결과
+핵심 학습 반복: 고정 Gold(dev) -> 구간별 채점 -> 오류 한 건 선택 -> TDD -> 한 가지 개선 -> 재채점
+
+보조 통합 반복: 승인 RSS -> 기사 입력 -> R1 -> R2 -> R3 -> R4/KOSIS 대조 -> 운영 결과
                                                |
                                                v
                                    HOLD 사유와 커버리지 개선 후보
-
-고정 Gold(dev) -> R2/R3/R4 채점 -> 점수/오류 큐 -> 한 가지 개선 -> 재실행
 ```
 
 위 두 화살표는 연결되지만 같은 점수는 아니다. 새 기사는 독립 정답이 없으므로
 `MATCH`, `MISMATCH`, `UNDETERMINED`, `HOLD` 건수를 만들 수는 있어도 이것을
 정확도라고 부르면 안 된다. 정확도는 미리 고정하고 독립 검토한 Gold에서만 계산한다.
 
-## 1. 운영 반복: 새 기사를 안전하게 처리한다
+부트캠프 완료 기준은 서비스 기능 수나 절대 점수가 아니다. baseline, failing test, 단일 변경,
+동일 계약 재평가, 실패 원인과 다음 가설을 한 흐름으로 설명할 수 있어야 한다. 교육 목표와 A/B/C
+구간 매핑은 `docs/reference/19_BOOTCAMP_EDUCATIONAL_DIRECTION.md`를 따른다.
+
+## 1. 보조 통합 반복: 새 기사를 제한적으로 처리한다
 
 ### 입력 승인 경계
 
@@ -53,7 +58,7 @@ R1~R4의 상태·건수·HOLD reason count만 저장된다. 기사 제목·URL·
 R3은 후보 표를 고르고 Hard Guard를 통과시키는 단계다. R4에서만 Evidence Cell, 검증된 공식값,
 결정론 계산, 최종 Verdict가 이어진다. 어느 단계든 근거가 부족하면 HOLD가 정답이다.
 
-## 2. 평가 반복: 점수로 한 가지씩 개선한다
+## 2. 핵심 학습 반복: 점수와 오류로 한 가지씩 개선한다
 
 R2에는 고정 `dev` 270건과 잠긴 `test` 169건이 있다. 개선 중에는 dev만 사용한다.
 
@@ -63,6 +68,10 @@ R2에는 고정 `dev` 270건과 잠긴 `test` 169건이 있다. 개선 중에는
 4. 새 experiment ID로 dev 270건을 실행하고 같은 scorer로 채점한다.
 5. 응답률 95% 이상이고 12-slot macro accuracy가 같은 계약에서 재현되면 다음 오류를 선택한다.
 6. test는 후보가 안정된 뒤 한 번만 최종 확인한다.
+
+각 개선은 이틀 단위 학습 카드로 남긴다. 1일차에는 기준선·병목·가설·failing test를, 2일차에는
+최소 구현·동일 scorer 재평가·퇴행·회고를 기록한다. 실패한 시도도 삭제하지 않으며
+`IMPROVED`, `NOT_IMPROVED`, `NOT_EVALUABLE` 중 하나로 결론을 낸다.
 
 `tools/build_r2_experiment_tracking.py --report <new_report> --predictions <new_predictions>`는
 새 실험을 저장된 dev 기준선들과 함께 score board에 넣는다. 새 실험 하나만 보이게 기준선을
@@ -186,24 +195,25 @@ scope만 남긴다. 기사 원문·제목·URL, feed 이름, raw provider/KOSIS 
 RSS 원문·기사 URL·비밀값·로컬 경로를 복사하지 않는다. 이 명령은 on-demand 조회이므로 scheduler나
 무한 반복을 등록하지 않는다.
 
-## 4. Hermes 역할과 사람 역할
+## 4. 교육 실습에서 Hermes 역할과 사람 역할
 
 | 주체 | 할 일 | 하지 않는 일 |
 |---|---|---|
-| Local CLAFACT | RSS 수집, R1~R4, KOSIS 조회, Python 계산, manifest 저장 | LLM 공식값 생성 |
-| Hermes | quality gate, bounded Mission 실행, count-only 결과 전달 | RSS 승인, 비밀 읽기/출력, Windows 역방향 접근, Verdict 생성 |
-| 사람 | 출처 승인, Shadow run 검토, 개선 가설 한 건 승인, 승격 결정 | 매 기사에 임의 KOSIS ID를 강제 입력 |
+| Local CLAFACT | 구간별 테스트, R1~R4, KOSIS 조회, Python 계산, manifest 저장 | LLM 공식값 생성 |
+| Hermes | 저장 artifact 재평가, quality gate, bounded 실험, count-only 학습 증거 전달 | RSS 승인, 비밀 읽기/출력, 자동 코드 수정·자동학습, Verdict 생성 |
+| 학습자 | 병목 설명, failing test 작성, 개선 가설 한 건 승인, 결과 회고·발표 | Gold/threshold를 점수에 맞게 변경, 임의 KOSIS ID 강제 입력 |
 
 Hermes에는 `config/hermes/clafact_autonomous_mlops_loop_master_prompt.md`를 먼저 넣고,
 `operational_cycle`, `post_run_gold_evaluation`, `gold_replay_evaluation`, `r2_dev_experiment` 중 하나만
-고르게 한다. 처음에는 스케줄을 등록하지 않고, 수동 bounded cycle 세 번을 검토한 뒤에만 별도 승인으로
-일정화를 검토한다.
+고르게 한다. 저장 산출물만 읽는 교육용 점검은 일정화할 수 있지만, 새 prediction 생성·provider 호출·
+RSS 운영 cycle은 사람의 별도 승인과 수동 검토 없이는 일정화하지 않는다.
 
-## 5. 승격 기준
+## 5. 부트캠프 결과물 완성 기준
 
-1. Quality Gate와 persistence preflight PASS
-2. 승인된 한 RSS 출처로 최대 5건 cycle 세 번 수동 검토
-3. 기사 본문/URL/비밀이 Hermes 보고에 없음을 확인
-4. R2 dev 개선이 고정 계약에서 재현
-5. 독립 test와 R3/R4 Gold는 마지막 확인에만 사용
-6. 그 뒤에도 모든 RSS 출처 및 스케줄은 명시적으로 승인한 것만 활성화
+1. A/B/C 중 최소 한 구간의 초기 병목과 실패 원인을 설명한다.
+2. Quality Gate PASS와 failing test 선행 증거를 남긴다.
+3. 승인된 한 요소만 바꾸고 R2 dev 또는 해당 구간 Gold에서 같은 계약으로 재평가한다.
+4. 개선·퇴행·변화 없음과 남은 `NOT_EVALUABLE`을 함께 보고한다.
+5. run ID, split, scorer, input/output SHA-256으로 결과가 재현된다.
+6. 발표에서 운영 coverage를 정확도로 표현하지 않고 시행착오와 배운 점을 중심에 둔다.
+7. RSS/E2E는 필요한 경우 최대 5건의 보조 데모로만 실행하며 별도 승인 경계를 유지한다.

@@ -1,7 +1,32 @@
-# CLAFACT FlyHermes deployment overlay
+# CLAFACT Bootcamp Learning Lab
 
-This repository carries the bounded, reviewable overlay used to move the
-CLAFACT MLOps Gold-evaluation controller to FlyHermes.
+This repository carries the bounded, reviewable FlyHermes overlay used to
+learn how the CLAFACT pipeline fails, test one improvement at a time, and
+preserve evidence that another learner can reproduce.
+
+The primary deliverable is **not a production news service**. It is a clear
+problem-solving record:
+
+```text
+baseline -> one bottleneck -> hypothesis -> failing test -> one change
+         -> fixed-data evaluation -> error analysis -> reflection
+```
+
+The end-to-end RSS/KOSIS flow remains available only as a bounded demonstration
+and integration check. Uptime, article volume, and AUTO/HOLD counts do not prove
+model quality.
+
+## Bootcamp learning outcomes
+
+- Explain the R1-R4 pipeline by input, output, failure reason, and owner.
+- Separate operational coverage from Gold-based model accuracy.
+- Improve one A/B/C section with TDD and a fixed evaluation contract.
+- Preserve immutable predictions, manifests, metrics, and SHA-256 evidence.
+- Treat `HOLD` and `NOT_EVALUABLE` as responsible decisions, not failures to hide.
+- Present the initial result, failed attempts, measured improvement, and next limit.
+
+The detailed learning contract is in
+`overlay/docs/reference/19_BOOTCAMP_EDUCATIONAL_DIRECTION.md`.
 
 ## Safety boundary
 
@@ -17,7 +42,7 @@ CLAFACT MLOps Gold-evaluation controller to FlyHermes.
 - R1 Gold CSV, API keys, RSS article text, and article URLs are not stored in
   this public repository.
 
-## Layout
+## Repository role
 
 Files below `overlay/` are copied over the existing FlyHermes checkout while
 preserving the same relative paths. Existing files are backed up under the
@@ -31,3 +56,8 @@ After a saved pipeline run, `tools/run_linked_post_run_evaluation.py` creates a
 new immutable derived config and runs exactly one offline Gold evaluation. It
 discovers existing R3/R4 artifacts but never fabricates missing predictions,
 calls an API, retries an operational run, or overwrites an evaluation ID.
+
+FlyHermes is used as a reproducible remote lab runner. It is not treated as an
+autonomous service operator or an automatic training system. The default daily
+learning check reads stored artifacts only and proposes the next bounded
+experiment; people approve code, Gold, provider calls, and experiment changes.
