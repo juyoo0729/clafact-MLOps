@@ -23,8 +23,9 @@ Files below `overlay/` are copied over the existing FlyHermes checkout while
 preserving the same relative paths. Existing files are backed up under the
 persistent FlyHermes state directory before deployment.
 
-`deployment_sha256.json` records the SHA-256 of every overlay file so the
-server deployment can be verified without exposing source data.
+`deployment_sha256.json` records the SHA-256 and executable-mode expectation
+of every overlay file so the server deployment can be verified without
+exposing source data.
 
 After a saved pipeline run, `tools/run_linked_post_run_evaluation.py` creates a
 new immutable derived config and runs exactly one offline Gold evaluation. It
