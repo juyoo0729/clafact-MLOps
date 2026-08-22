@@ -4,6 +4,7 @@
     "enabled": false,
     "policy": "manual_bounded_runs_only"
   },
+  "environment_file": "<absolute_local_environment_file>",
   "controller_output_root": "data/mlops_automation_runs",
   "modes": {
     "operational_cycle": {
@@ -26,8 +27,8 @@
       "r2_gold": "data/model_benchmarks/r2_12slot_v2/gold.jsonl",
       "r2_predictions": "data/model_benchmarks/r2_12slot_v2/runs/<saved_dev_predictions>.jsonl",
       "r2_split": "dev",
-      "r3_predictions": "<saved_r3_predictions>.jsonl",
-      "r4_predictions": "<saved_r4_predictions>.jsonl",
+      "r3_predictions": "<optional_saved_r3_predictions>.jsonl",
+      "r4_predictions": "<optional_saved_r4_predictions>.jsonl",
       "gold20_fixture": "tests/goldset/fixtures/pilot20.json",
       "gold20_routes": "tests/goldset/fixtures/pilot20_expected_routes.json",
       "gold20_route_report": "data/goldset_reports/pilot20_route_report.json",

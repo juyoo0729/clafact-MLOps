@@ -75,7 +75,7 @@ def main() -> int:
             python_executable=sys.executable,
         )
         print(json.dumps(external_summary, ensure_ascii=False, sort_keys=True))
-        return 1 if external_summary["status"] == "FAILED" else 0
+        return 1 if str(external_summary["status"]).endswith("FAILED") else 0
     except (AutomationConfigError, AutomationRunExistsError, FileNotFoundError, json.JSONDecodeError) as error:
         reason_code = str(error).split(":", 1)[0]
         print(

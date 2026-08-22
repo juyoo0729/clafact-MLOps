@@ -13,6 +13,7 @@ from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime
 from hashlib import sha256
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -26,6 +27,12 @@ SUPPORTED_MODES = (
     "gold_replay_evaluation",
     "r2_dev_experiment",
 )
+
+SENSITIVE_ENVIRONMENT_KEYS = {
+    "OPENAI_API_KEY",
+    "KOSIS_API_KEY",
+    "HCX_API_KEY",
+}
 
 CONDITIONAL_REPLAY_SCOPE = {
     "conditional_vs_e2e": "CONDITIONAL_REPLAY_NOT_END_TO_END",
@@ -192,12 +199,19 @@ def execute_controller_mode(
     safe_run_id = _safe_id(controller_run_id, "CONTROLLER_RUN_ID_INVALID")
     output_root = _path(config["controller_output_root"], root)
     run_dir = output_root / safe_run_id
+    child_environment = (
+        None
+        if runner is not None
+        else build_child_environment(mode, config, project_root=root)
+    )
     try:
         run_dir.mkdir(parents=True, exist_ok=False)
     except FileExistsError as error:
         raise AutomationRunExistsError(f"CONTROLLER_RUN_ALREADY_EXISTS:{safe_run_id}") from error
 
-    run_command = runner or _default_runner
+    run_command = runner or (
+        lambda command, cwd: _default_runner(command, cwd, environment=child_environment)
+    )
     executed_tools: list[dict[str, Any]] = []
     completed_results: list[subprocess.CompletedProcess[str]] = []
     for command in plan["commands"]:
@@ -206,16 +220,11 @@ def execute_controller_mode(
         tool_name = Path(command[1]).name if len(command) > 1 else "UNKNOWN"
         executed_tools.append({"tool": tool_name, "return_code": completed.returncode})
         if completed.returncode != 0:
-            summary = build_controller_summary(
-                mode=mode,
-                status="FAILED",
-                operational_metrics={},
-                gold_evaluation_metrics={},
-                evaluation_status="NOT_EVALUABLE" if mode != "operational_cycle" else "NOT_RUN",
-                not_evaluable_reason_counts={f"CHILD_COMMAND_FAILED_{tool_name.upper()}": 1},
-                scope=plan["scope"],
-                artifact_hashes={},
+            summary = _salvage_failed_child_summary(
+                plan=plan,
+                completed=completed_results,
                 executed_tools=executed_tools,
+                tool_name=tool_name,
             )
             _write_controller_run(run_dir, summary)
             return run_dir, build_external_summary(summary)
@@ -250,6 +259,107 @@ def new_controller_run_id(mode: str) -> str:
     if mode not in SUPPORTED_MODES:
         raise AutomationConfigError("CONTROLLER_MODE_UNKNOWN")
     return f"{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}-{mode}"
+
+
+def build_child_environment(
+    mode: str,
+    config: Mapping[str, Any],
+    *,
+    project_root: str | Path,
+    base_environment: Mapping[str, str] | None = None,
+) -> dict[str, str]:
+    """Build a child-only environment without ever serializing secret values."""
+    if mode not in SUPPORTED_MODES:
+        raise AutomationConfigError("CONTROLLER_MODE_UNKNOWN")
+    environment = dict(os.environ if base_environment is None else base_environment)
+    if mode in {"post_run_gold_evaluation", "gold_replay_evaluation"}:
+        for key in SENSITIVE_ENVIRONMENT_KEYS:
+            environment.pop(key, None)
+        return environment
+
+    env_path_value = config.get("environment_file")
+    if isinstance(env_path_value, str) and env_path_value.strip():
+        env_path = _path(env_path_value, Path(project_root).resolve())
+        if not env_path.is_file():
+            raise AutomationConfigError("ENVIRONMENT_FILE_NOT_FOUND")
+        environment.update(_read_environment_file(env_path))
+
+    mode_config = config.get("modes", {}).get(mode)
+    if not isinstance(mode_config, Mapping):
+        raise AutomationConfigError(f"MODE_CONFIG_MISSING[{mode}]")
+    required_keys: set[str] = set()
+    if mode == "operational_cycle":
+        if mode_config.get("use_configured_extractor") is True:
+            required_keys.add("OPENAI_API_KEY")
+        if any(
+            mode_config.get(key) is True
+            for key in ("use_kosis_live_discovery", "use_kosis_api", "prefer_api")
+        ):
+            required_keys.add("KOSIS_API_KEY")
+    elif mode == "r2_dev_experiment":
+        required_keys.add(
+            "HCX_API_KEY" if mode_config.get("provider") == "hcx" else "OPENAI_API_KEY"
+        )
+    for key in sorted(required_keys):
+        if not environment.get(key):
+            raise AutomationConfigError(f"REQUIRED_ENVIRONMENT_KEY_MISSING[{key}]")
+    return environment
+
+
+def prepare_linked_post_run_config(
+    *,
+    template_path: str | Path,
+    run_manifest_path: str | Path,
+    evaluation_id: str,
+    output_path: str | Path,
+) -> Path:
+    """Create one immutable offline post-run config linked to a saved pipeline run."""
+    template = Path(template_path).resolve()
+    manifest = Path(run_manifest_path).resolve()
+    output = Path(output_path).resolve()
+    if not template.is_file():
+        raise FileNotFoundError("POST_RUN_CONFIG_TEMPLATE_NOT_FOUND")
+    if not manifest.is_file():
+        raise FileNotFoundError("RUN_MANIFEST_NOT_FOUND")
+    safe_evaluation_id = _safe_id(evaluation_id, "EVALUATION_ID_INVALID")
+    config = json.loads(template.read_text(encoding="utf-8-sig"))
+    if not isinstance(config, dict):
+        raise AutomationConfigError("CONTROLLER_CONFIG_MUST_BE_OBJECT")
+    modes = config.get("modes")
+    if not isinstance(modes, dict):
+        raise AutomationConfigError("CONTROLLER_MODES_MISSING")
+    post = modes.get("post_run_gold_evaluation")
+    if not isinstance(post, dict):
+        raise AutomationConfigError("MODE_CONFIG_MISSING[post_run_gold_evaluation]")
+    for name, mode_config in modes.items():
+        if isinstance(mode_config, dict):
+            mode_config["enabled"] = name == "post_run_gold_evaluation"
+    config.pop("environment_file", None)
+    post["run_manifest"] = str(manifest)
+    post["evaluation_id"] = safe_evaluation_id
+    post.pop("r3_predictions", None)
+    post.pop("r4_predictions", None)
+    run_dir = manifest.parent
+    r3_path = _first_existing_file(
+        run_dir / "r3" / "ranked_candidates.jsonl",
+        run_dir / "r3" / "r4_ready_evidence.jsonl",
+    )
+    r4_path = _first_existing_file(
+        run_dir / "r4" / "verdicts.jsonl",
+        run_dir / "r4" / "r4_verdicts.jsonl",
+    )
+    if r3_path is not None:
+        post["r3_predictions"] = str(r3_path)
+    if r4_path is not None:
+        post["r4_predictions"] = str(r4_path)
+    validate_controller_config(config)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with output.open("x", encoding="utf-8") as handle:
+            handle.write(_json_text(config))
+    except FileExistsError as error:
+        raise AutomationRunExistsError("POST_RUN_CONFIG_ALREADY_EXISTS") from error
+    return output
 
 
 def _operational_plan(config: Mapping[str, Any], root: Path, python: str) -> tuple[list[list[str]], dict[str, Any]]:
@@ -296,8 +406,6 @@ def _post_run_plan(config: Mapping[str, Any], root: Path, python: str) -> tuple[
             "r1_gold",
             "r2_gold",
             "r2_predictions",
-            "r3_predictions",
-            "r4_predictions",
             "gold20_fixture",
             "gold20_routes",
             "gold20_route_report",
@@ -322,11 +430,16 @@ def _post_run_plan(config: Mapping[str, Any], root: Path, python: str) -> tuple[
         "--gold20-fixture", str(required["gold20_fixture"]),
         "--gold20-routes", str(required["gold20_routes"]),
         "--gold20-route-report", str(required["gold20_route_report"]),
-        "--r3-predictions", str(required["r3_predictions"]),
-        "--r4-predictions", str(required["r4_predictions"]),
         "--output-root", str(evaluation_root),
         "--evaluation-id", evaluation_id,
     ]
+    for key, flag in (
+        ("r3_predictions", "--r3-predictions"),
+        ("r4_predictions", "--r4-predictions"),
+    ):
+        path = _optional_file(config, key, root)
+        if path is not None:
+            command.extend([flag, str(path)])
     return [command], {"evaluation_dir": output_dir}
 
 
@@ -611,10 +724,16 @@ def _write_controller_run(run_dir: Path, summary: Mapping[str, Any]) -> None:
     (run_dir / "sha256_manifest.json").write_text(_json_text(manifest), encoding="utf-8")
 
 
-def _default_runner(command: Sequence[str], cwd: Path) -> subprocess.CompletedProcess[str]:
+def _default_runner(
+    command: Sequence[str],
+    cwd: Path,
+    *,
+    environment: Mapping[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         list(command),
         cwd=cwd,
+        env=None if environment is None else dict(environment),
         capture_output=True,
         text=True,
         check=False,
@@ -632,6 +751,18 @@ def _required_file(config: Mapping[str, Any], key: str, root: Path) -> Path:
     path = _required_path(config, key, root)
     if not path.is_file():
         raise AutomationConfigError(f"REQUIRED_INPUT_FILE_NOT_FOUND[{key}]")
+    return path
+
+
+def _optional_file(config: Mapping[str, Any], key: str, root: Path) -> Path | None:
+    value = config.get(key)
+    if value is None or value == "":
+        return None
+    if not isinstance(value, str):
+        raise AutomationConfigError(f"OPTIONAL_PATH_INVALID[{key}]")
+    path = _path(value, root)
+    if not path.is_file():
+        raise AutomationConfigError(f"OPTIONAL_INPUT_FILE_NOT_FOUND[{key}]")
     return path
 
 
@@ -662,6 +793,62 @@ def _last_output_path(stdout: str) -> Path:
     if not path.is_file():
         raise AutomationConfigError("CHILD_OUTPUT_ARTIFACT_NOT_FOUND")
     return path
+
+
+def _salvage_failed_child_summary(
+    *,
+    plan: Mapping[str, Any],
+    completed: Sequence[subprocess.CompletedProcess[str]],
+    executed_tools: Sequence[Mapping[str, Any]],
+    tool_name: str,
+) -> dict[str, Any]:
+    if plan.get("mode") == "operational_cycle":
+        try:
+            summary = _collect_success_summary(plan, completed, executed_tools)
+            reasons = summary.get("not_evaluable_reason_counts")
+            if isinstance(reasons, dict):
+                reasons[f"CHILD_COMMAND_FAILED_{tool_name.upper()}"] = 1
+            return summary
+        except Exception:
+            pass
+    return build_controller_summary(
+        mode=str(plan["mode"]),
+        status="FAILED",
+        operational_metrics={},
+        gold_evaluation_metrics={},
+        evaluation_status=(
+            "NOT_EVALUABLE" if plan.get("mode") != "operational_cycle" else "NOT_RUN"
+        ),
+        not_evaluable_reason_counts={f"CHILD_COMMAND_FAILED_{tool_name.upper()}": 1},
+        scope=plan["scope"],
+        artifact_hashes={},
+        executed_tools=executed_tools,
+    )
+
+
+def _read_environment_file(path: Path) -> dict[str, str]:
+    values: dict[str, str] = {}
+    for raw_line in path.read_text(encoding="utf-8-sig").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("export "):
+            line = line[7:].lstrip()
+        if "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip()
+        if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", key):
+            continue
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+            value = value[1:-1]
+        values[key] = value
+    return values
+
+
+def _first_existing_file(*paths: Path) -> Path | None:
+    return next((path.resolve() for path in paths if path.is_file()), None)
 
 
 def _json_object(path: Path) -> dict[str, Any]:

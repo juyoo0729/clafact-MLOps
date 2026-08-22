@@ -17,6 +17,9 @@ operational result, never a model-accuracy score.
 - LLM use is limited to R2 structured Claim extraction. KOSIS Evidence, official values, calculations, and Verdicts remain in CLAFACT Python code.
 - Hard Guard precedes semantic matching. Do not force Top-1. A HOLD is a valid result.
 - Do not run the locked test split in this Mission.
+- A networked operational child may receive required key names from the
+  operator-approved local environment file. Never read, print, copy, or retain
+  their values. Offline evaluation receives no provider keys.
 
 ## Prerequisite: quality and persistence
 
@@ -44,6 +47,9 @@ one run manifest, frozen Gold, saved predictions, and a new evaluation ID.
 Execute `tools/run_mlops_gold_evaluation.py`. This mode is offline: do not call
 RSS, KOSIS API, or an LLM API. Preserve incomplete or zero joins as PARTIAL or
 NOT_EVALUABLE and stop after writing the immutable evaluation directory.
+If R3 or R4 predictions do not exist, omit them and record the stage as
+`R3_PREDICTION_ARTIFACT_MISSING` or `R4_PREDICTION_ARTIFACT_MISSING`; never
+fabricate a prediction artifact to create a score.
 
 ### Mode C: `gold_replay_evaluation`
 

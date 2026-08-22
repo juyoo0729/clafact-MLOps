@@ -8,6 +8,7 @@ import subprocess
 
 import pytest
 
+import core.mlops_automation_controller as controller
 from core.mlops_automation_controller import (
     CONDITIONAL_REPLAY_SCOPE,
     AutomationConfigError,
@@ -331,3 +332,154 @@ def test_failed_r2_child_stops_before_score_tracking_or_retry(tmp_path: Path) ->
     assert len(calls) == 1
     assert external["status"] == "FAILED"
     assert external["metric_values"] == {}
+
+
+def test_operational_child_environment_loads_named_keys_without_serializing_values(
+    tmp_path: Path,
+) -> None:
+    config = _base_config(tmp_path)
+    env_file = tmp_path / ".env"
+    env_file.write_text(
+        "OPENAI_API_KEY=unit-openai-secret\nKOSIS_API_KEY='unit-kosis-secret'\n",
+        encoding="utf-8",
+    )
+    config["environment_file"] = str(env_file)
+    config["modes"]["operational_cycle"].update(
+        {
+            "use_configured_extractor": True,
+            "use_kosis_live_discovery": True,
+            "use_kosis_api": True,
+        }
+    )
+
+    child_environment = controller.build_child_environment(
+        "operational_cycle", config, project_root=tmp_path, base_environment={}
+    )
+
+    assert child_environment["OPENAI_API_KEY"] == "unit-openai-secret"
+    assert child_environment["KOSIS_API_KEY"] == "unit-kosis-secret"
+    safe_text = json.dumps(
+        build_controller_summary(
+            mode="operational_cycle",
+            status="READY",
+            operational_metrics={},
+            gold_evaluation_metrics={},
+            evaluation_status="NOT_RUN",
+            not_evaluable_reason_counts={},
+            scope={},
+            artifact_hashes={},
+        )
+    )
+    assert "unit-openai-secret" not in safe_text
+    assert "unit-kosis-secret" not in safe_text
+
+
+def test_nonzero_operational_child_salvages_count_only_cycle_artifact(tmp_path: Path) -> None:
+    config = _base_config(tmp_path)
+    cycle = tmp_path / "failed_cycle.json"
+    cycle.write_text(
+        json.dumps(
+            {
+                "cycle_status": "PIPELINE_FAILED",
+                "rss": {"NEW_ARTICLES": 10, "R1_READY": 10},
+                "pipeline": {
+                    "stages": [
+                        {
+                            "stage": "r2",
+                            "status": "HOLD",
+                            "counts": {"processed": 4, "holds": 4},
+                            "reason_counts": {"R2_STRUCTURED_EXTRACTOR_FAILED": 4},
+                        },
+                        {
+                            "stage": "r3",
+                            "status": "FAILED",
+                            "counts": {"failed": 1},
+                            "reason_counts": {"R3_STAGE_PROCESS_FAILED": 1},
+                        },
+                    ]
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    def runner(command, cwd):
+        return subprocess.CompletedProcess(command, 7, stdout=str(cycle), stderr="raw secret failure")
+
+    run_dir, external = execute_controller_mode(
+        mode="operational_cycle",
+        config=config,
+        controller_run_id="CTRL-OP-FAILED-ARTIFACT-001",
+        project_root=tmp_path,
+        python_executable="python",
+        runner=runner,
+    )
+
+    assert external["status"] == "PIPELINE_FAILED"
+    assert external["stage_counts"]["operational"]["r2"] == {"holds": 4, "processed": 4}
+    assert external["stage_counts"]["operational"]["r3"] == {"failed": 1}
+    assert external["artifact_hashes"]["operational_cycle"]
+    assert {row["reason_code"] for row in external["reason_codes"]} >= {
+        "R2_STRUCTURED_EXTRACTOR_FAILED",
+        "R3_STAGE_PROCESS_FAILED",
+    }
+    assert "raw secret failure" not in (run_dir / "controller_summary.json").read_text(encoding="utf-8")
+
+
+def test_post_run_plan_allows_absent_r3_r4_artifacts_without_network_fallback(
+    tmp_path: Path,
+) -> None:
+    config = _base_config(tmp_path)
+    post = config["modes"]["post_run_gold_evaluation"]
+    post.pop("r3_predictions")
+    post.pop("r4_predictions")
+
+    plan = build_execution_plan(
+        "post_run_gold_evaluation", config, project_root=tmp_path, python_executable="python"
+    )
+    command_text = " ".join(plan["commands"][0])
+
+    assert plan["network_calls_allowed"] is False
+    assert "--r3-predictions" not in command_text
+    assert "--r4-predictions" not in command_text
+    assert "--rss-config" not in command_text
+    assert "--use-kosis-api" not in command_text
+
+
+def test_linked_post_run_config_discovers_existing_predictions_and_never_overwrites(
+    tmp_path: Path,
+) -> None:
+    config = _base_config(tmp_path)
+    template = tmp_path / "post_run_template.json"
+    template.write_text(json.dumps(config), encoding="utf-8")
+    run_dir = tmp_path / "runs" / "run-001"
+    (run_dir / "r3").mkdir(parents=True)
+    r3_predictions = run_dir / "r3" / "ranked_candidates.jsonl"
+    r3_predictions.write_text("{}\n", encoding="utf-8")
+    run_manifest = run_dir / "run_manifest.json"
+    run_manifest.write_text(
+        json.dumps({"pipeline_run_id": "run-001", "stages": [{"stage": "r3"}]}),
+        encoding="utf-8",
+    )
+    output = tmp_path / "daily" / "post-run-001.json"
+
+    created = controller.prepare_linked_post_run_config(
+        template_path=template,
+        run_manifest_path=run_manifest,
+        evaluation_id="POST-RUN-001",
+        output_path=output,
+    )
+    prepared = json.loads(created.read_text(encoding="utf-8"))
+
+    post = prepared["modes"]["post_run_gold_evaluation"]
+    assert post["run_manifest"] == str(run_manifest.resolve())
+    assert post["r3_predictions"] == str(r3_predictions.resolve())
+    assert "r4_predictions" not in post
+    assert post["evaluation_id"] == "POST-RUN-001"
+    with pytest.raises(FileExistsError):
+        controller.prepare_linked_post_run_config(
+            template_path=template,
+            run_manifest_path=run_manifest,
+            evaluation_id="POST-RUN-001",
+            output_path=output,
+        )

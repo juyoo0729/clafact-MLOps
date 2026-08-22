@@ -49,8 +49,8 @@ def main() -> int:
     parser.add_argument("--gold20-fixture", type=Path, default=DEFAULT_GOLD20_FIXTURE)
     parser.add_argument("--gold20-routes", type=Path, default=DEFAULT_GOLD20_ROUTES)
     parser.add_argument("--gold20-route-report", type=Path, default=DEFAULT_GOLD20_ROUTE_REPORT)
-    parser.add_argument("--r3-predictions", required=True, type=Path)
-    parser.add_argument("--r4-predictions", required=True, type=Path)
+    parser.add_argument("--r3-predictions", type=Path)
+    parser.add_argument("--r4-predictions", type=Path)
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
     parser.add_argument("--evaluation-id", help="Immutable output directory name; generated when omitted.")
     args = parser.parse_args()
@@ -83,8 +83,8 @@ def run_linked_evaluation(
     gold20_fixture_path: Path,
     gold20_routes_path: Path,
     gold20_route_report_path: Path,
-    r3_predictions_path: Path,
-    r4_predictions_path: Path,
+    r3_predictions_path: Path | None,
+    r4_predictions_path: Path | None,
     output_root: Path,
     evaluation_id: str | None = None,
 ) -> Path:
@@ -97,8 +97,6 @@ def run_linked_evaluation(
         "gold20_fixture": gold20_fixture_path,
         "gold20_expected_routes": gold20_routes_path,
         "gold20_route_report": gold20_route_report_path,
-        "r3_predictions": r3_predictions_path,
-        "r4_predictions": r4_predictions_path,
     }
     for logical_name, path in required_paths.items():
         if not path.is_file():
@@ -118,8 +116,19 @@ def run_linked_evaluation(
     r1_gold = _load_csv(r1_gold_path)
     r2_gold = _load_jsonl(r2_gold_path)
     r2_predictions = _load_jsonl(r2_predictions_path)
-    r3_predictions = _load_jsonl(r3_predictions_path)
-    r4_predictions = _load_jsonl(r4_predictions_path)
+    optional_paths = {
+        logical_name: path
+        for logical_name, path in (
+            ("r3_predictions", r3_predictions_path),
+            ("r4_predictions", r4_predictions_path),
+        )
+        if path is not None
+    }
+    for logical_name, path in optional_paths.items():
+        if not path.is_file():
+            raise FileNotFoundError(f"EVALUATION_INPUT_NOT_FOUND[{logical_name}]: {path}")
+    r3_predictions = _load_jsonl(r3_predictions_path) if r3_predictions_path else []
+    r4_predictions = _load_jsonl(r4_predictions_path) if r4_predictions_path else []
     gold20 = _load_gold20_contract(
         fixture_path=gold20_fixture_path,
         routes_path=gold20_routes_path,
@@ -128,8 +137,16 @@ def run_linked_evaluation(
 
     r1_result = evaluate_r1(gold_rows=r1_gold, candidate_rows=r1_candidates)
     r2_result = evaluate_r2(gold_rows=r2_gold, prediction_rows=r2_predictions, split=r2_split)
-    r3_result = evaluate_r3(gold_rows=gold20, prediction_rows=r3_predictions)
-    r4_result = evaluate_r4(gold_rows=gold20, prediction_rows=r4_predictions)
+    r3_result = (
+        evaluate_r3(gold_rows=gold20, prediction_rows=r3_predictions)
+        if r3_predictions_path
+        else _missing_prediction_result("R3", gold20)
+    )
+    r4_result = (
+        evaluate_r4(gold_rows=gold20, prediction_rows=r4_predictions)
+        if r4_predictions_path
+        else _missing_prediction_result("R4", gold20)
+    )
     gold_results = {"r1": r1_result, "r2": r2_result, "r3": r3_result, "r4": r4_result}
     review_inputs = [
         {**row, "stage": "R1"} for row in r1_candidates
@@ -176,6 +193,7 @@ def run_linked_evaluation(
     ]
     input_files = {
         **required_paths,
+        **optional_paths,
         **{f"verified_{key}": value for key, value in verified_stage_paths.items()},
         **{f"stage_input_{key}": value for key, value in {**r1_paths, **r2_paths}.items()},
     }
@@ -187,6 +205,45 @@ def run_linked_evaluation(
         review_queue_status=review_status,
         input_files=input_files,
     )
+
+
+def _missing_prediction_result(
+    stage: str, gold_rows: list[dict[str, Any]]
+) -> dict[str, Any]:
+    stage_name = str(stage).upper()
+    if stage_name not in {"R3", "R4"}:
+        raise ValueError("MISSING_PREDICTION_STAGE_INVALID")
+    reason = f"{stage_name}_PREDICTION_ARTIFACT_MISSING"
+    gold_ids = sorted(
+        str(row.get("claim_id") or "").strip()
+        for row in gold_rows
+        if str(row.get("claim_id") or "").strip()
+    )
+    return {
+        "stage": stage_name,
+        "status": "NOT_EVALUABLE",
+        "reason_code": reason,
+        "join": {
+            "gold_count": len(gold_ids),
+            "prediction_count": 0,
+            "joined_count": 0,
+            "coverage": 0.0 if gold_ids else None,
+            "missing_prediction_count": len(gold_ids),
+            "unexpected_prediction_count": 0,
+        },
+        "metrics": {},
+        "not_evaluable_reason_counts": {reason: max(1, len(gold_ids))},
+        "row_results": [
+            {
+                "stage": stage_name,
+                "claim_id": claim_id,
+                "join_status": "NOT_JOINED",
+                "metric_status": "NOT_EVALUABLE",
+                "reason_code": reason,
+            }
+            for claim_id in gold_ids
+        ],
+    }
 
 
 def _load_verified_stage_outputs(

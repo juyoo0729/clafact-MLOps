@@ -87,6 +87,24 @@ R3/R4는 현재 독립 Gold·기사시점 공식 Snapshot·Evidence coordinate �
   --evaluation-id <new_evaluation_id>
 ```
 
+R3/R4 prediction 파일이 없는 실패·부분 실행에서는 해당 인자를 생략한다. 평가기는 Gold를 다른
+prediction으로 바꾸지 않고 각각 `R3_PREDICTION_ARTIFACT_MISSING`,
+`R4_PREDICTION_ARTIFACT_MISSING`으로 기록하며 그 단계의 점수를 만들지 않는다.
+
+저장된 pipeline run에 자동으로 연결할 때는 아래 wrapper가 post-run 설정 원본을 새 파일로 복제하고,
+실제로 존재하는 R3/R4 산출물만 찾아 정확히 한 번 오프라인 평가한다. 설정 파일, controller run ID,
+evaluation ID가 이미 있으면 중단한다.
+
+```sh
+/opt/data/clafact_state/venvs/clafact-auto/bin/python \
+  tools/run_linked_post_run_evaluation.py \
+  --template /opt/data/clafact_state/config/mlops_automation.post_run_full_20260820.json \
+  --run-manifest /opt/data/clafact_state/runs/<pipeline_run_id>/run_manifest.json \
+  --evaluation-id <new_evaluation_id> \
+  --config-output /opt/data/clafact_state/config/daily/<new_config>.json \
+  --controller-run-id <new_controller_run_id>
+```
+
 같은 evaluation ID의 디렉터리가 이미 있으면 중단하며 기존 산출물을 덮어쓰지 않는다. 새 디렉터리에는
 다음 파일이 생긴다.
 
@@ -128,6 +146,12 @@ r2_dev_experiment
 `--validate-only`를 제거하면 선택한 mode를 한 번 실행한다. controller는 shell command 문자열을 만들지 않고
 기존 Python 도구를 argument list로 호출한다. child stdout/stderr는 외부 summary로 전달하지 않는다. 실패,
 HOLD, PARTIAL이면 즉시 종료하며 재시도하거나 다음 mode로 넘어가지 않는다.
+
+운영 mode에서 API 사용 flag를 켜는 경우 controller 최상위 `environment_file`에 FlyHermes 로컬 환경
+파일의 절대 경로를 지정한다. controller는 필요한 `OPENAI_API_KEY`, `KOSIS_API_KEY`의 존재만 확인해
+자식 프로세스 환경에 전달하며 값은 summary/config/manifest에 기록하지 않는다. 오프라인 Gold mode는
+이 키들을 자식 환경에서 제거한다. 운영 자식이 non-zero로 끝나도 유효한 count-only cycle JSON이 있으면
+단계별 status/count/reason과 SHA-256을 보존하되, 평가 점수로 바꾸거나 자동 재시도하지 않는다.
 
 controller 자체 기록은 새 `data/mlops_automation_runs/<controller_run_id>/` 아래에만 생성된다.
 
