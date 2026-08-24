@@ -47,3 +47,16 @@ def test_replay_marks_slot_ready_but_keeps_runtime_role_gate() -> None:
     rows, _ = replay_r2_flexible_gold([_row("C1", "AUTO_OK")])
     assert rows[0]["flexible_route"] == "R2_SLOT_READY"
     assert rows[0]["runtime_r3_admission"] == "BLOCKED_UNTIL_TARGET_VALUE_ROLE"
+
+
+def test_replay_counts_absolute_time_gap_subtypes_without_auto_filling() -> None:
+    row = _row("C1", "HOLD", time=None, frequency=None)
+    row["sentence"] = "1991년 이후 4월 기준 가장 높았다."
+
+    rows, summary = replay_r2_flexible_gold([row])
+
+    assert rows[0]["time_gap_subtype"] == "PARTIAL_MONTH_NEEDS_TARGET_YEAR_REVIEW"
+    assert rows[0]["runtime_r3_admission"] == "NOT_READY"
+    assert summary["absolute_time_gap_subtype_counts"] == {
+        "PARTIAL_MONTH_NEEDS_TARGET_YEAR_REVIEW": 1
+    }

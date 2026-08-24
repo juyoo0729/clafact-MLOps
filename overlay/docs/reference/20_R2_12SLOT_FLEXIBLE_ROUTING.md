@@ -34,8 +34,32 @@ R2에서 `time`, `frequency`만 부족한 Claim과 값·단위·의미가 부족
 | 합계 | 1,542 | 고유 Claim ID 1,542 |
 
 490건 중 `gold_time_source=context_required`는 479건이다. 나머지 11건은
-`absolute_in_sentence`로 표시됐지만 기간·주기 슬롯이 비어 있어 문장 내부 기간 추출 오류 후보로
-별도 회귀시험해야 한다.
+`absolute_in_sentence`로 표시됐지만 기간·주기 슬롯이 비어 있어 별도 진단 대상으로 분리했다.
+
+## 후속 실험: absolute-in-sentence 11건
+
+### 초기 가설과 실패 시험
+
+초기 가설은 “문장 안의 연도·월 표현을 읽으면 11건을 결정론적으로 복원할 수 있다”였다.
+수정 전에는 기간 형태를 구분하는 모듈이 없어 대표 시험이 collection error로 실패했다.
+
+### 확인된 반례와 단일 변경
+
+11건에는 목표 기간뿐 아니라 비교 기준, 출생 코호트, 역사적 사건 배경, 여러 연도·범위가 섞여 있었다.
+따라서 기간을 자동 입력하지 않고 문장의 기간 형태와 다음 조치만 기록하는 privacy-safe triage를 추가했다.
+
+| 하위유형 | 건수 | 다음 조치 |
+|---|---:|---|
+| `MULTIPLE_OR_RANGE_PERIODS_REVIEW` | 4 | 목표·비교 기간 분리 또는 원자 Claim 재확인 |
+| `DECADE_OR_COHORT_PERIOD_REVIEW` | 3 | 연대가 목표 기간인지 코호트·비교 기준인지 확인 |
+| `SINGLE_YEAR_TARGET_CONFIRMATION` | 3 | 단일 연도가 목표인지 사건 배경인지 확인 |
+| `PARTIAL_MONTH_NEEDS_TARGET_YEAR_REVIEW` | 1 | 목표 월 확인 후 기사 문맥에서 연도 복원 |
+| 합계 | 11 | 자동 입력 0건 |
+
+대표 시험은 수정 후 8개가 통과했고, 같은 1,542건 재생에서 운영 경로 수는
+`849 / 490 / 60 / 143`으로 변하지 않았다. 자동 기간 복원 가설의 결론은 `NOT_IMPROVED`다.
+대신 기간 누락 세부유형 coverage는 `0/11`에서 `11/11`로 늘었으며, 이는 정확도 지표가 아니라
+검토 대기열의 설명 가능성 개선이다.
 
 ## 평가 경계
 
@@ -46,6 +70,6 @@ KOSIS 표·셀·Verdict 정확도가 아니다. 동결 Gold에는 `target_value_
 
 ## 다음 단일 실험
 
-`ENRICHMENT_REQUIRED`를 기사 ID별로 묶고, 원문 전체 대신 기간 후보와 근거 span/hash만 R1에서
-전달해 `time`, `frequency`를 한 번 복원한다. 먼저 11건의 문장 내부 기간 추출 후보를 고정 회귀시험으로
-분리한 뒤 479건의 기사 문맥 보완으로 확장한다.
+먼저 `SINGLE_YEAR_TARGET_CONFIRMATION` 3건과 partial-month 1건의 목표 기간을 비공개 검토표에서
+확인한다. 그 전에는 runtime period resolver를 넓히지 않는다. 이후 `context_required` 479건을 기사 ID별로
+묶고, 원문 전체 대신 기간 후보와 근거 span/hash만 R1에서 전달해 `time`, `frequency`를 한 번 복원한다.

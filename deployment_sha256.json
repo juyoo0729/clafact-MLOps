@@ -1,6 +1,6 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 35,
+  "file_count": 37,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
@@ -58,14 +58,20 @@
     },
     {
       "path": "core/r2_flexible_gold_replay.py",
-      "sha256": "8f26d76f28fcb592911c362f692a210124cd36f80d8749fba126cef7ebb35491",
-      "bytes": 5876,
+      "sha256": "784f1066fc76f84b43fd22f4cf6a62db3bf5ca08a1dc0a5ff893512c9e2fecdc",
+      "bytes": 6827,
       "executable": false
     },
     {
       "path": "core/r2_slot_routing.py",
       "sha256": "b5758efd57cffec5b2a0bbb441723149fcde728ab3cd6b75eedc6d4946eaab0d",
       "bytes": 1666,
+      "executable": false
+    },
+    {
+      "path": "core/r2_time_gap_triage.py",
+      "sha256": "2fff43fe7cbd400da0e3a5fb1aec13efa188f3b425abee52a2963dec614e398a",
+      "bytes": 1914,
       "executable": false
     },
     {
@@ -82,8 +88,8 @@
     },
     {
       "path": "docs/reference/20_R2_12SLOT_FLEXIBLE_ROUTING.md",
-      "sha256": "e787541503a47bc39fbfe75e38bf694bcd1c89120553fc09fe118beafd30c915",
-      "bytes": 2679,
+      "sha256": "bca1209a0026f2b23ecf33885d7d0f0c8d394119a50bec792f580017b63ee3c7",
+      "bytes": 4242,
       "executable": false
     },
     {
@@ -136,8 +142,14 @@
     },
     {
       "path": "tests/unit/test_r2_flexible_gold_replay.py",
-      "sha256": "2cc9fcca235cf51a247d51236f7e862bebcbcd398a06af93861d9299a9915402",
-      "bytes": 1788,
+      "sha256": "286b82f8948a1a742548ebd70bdcba894a51bbfac831cc51a86a20300035ac42",
+      "bytes": 2309,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_r2_time_gap_triage.py",
+      "sha256": "3ec811e9898662655a6599cc0da81ff0d1f3b4df125a925541396e1ab10d9d9a",
+      "bytes": 1219,
       "executable": false
     },
     {

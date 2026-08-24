@@ -6,6 +6,8 @@ from collections import Counter
 from collections.abc import Iterable
 from typing import Any
 
+from core.r2_time_gap_triage import classify_absolute_time_gap
+
 
 R2_SCORABLE_REQUIRED_SLOTS = (
     "indicator",
@@ -44,6 +46,16 @@ def replay_r2_flexible_gold(
             slot for slot in R2_SCORABLE_REQUIRED_SLOTS if _is_missing(slots.get(slot))
         )
         route, route_reason, next_action = _route(original_status, missing_slots)
+        time_gap_subtype = ""
+        time_gap_auto_fill_allowed: bool | None = None
+        if (
+            route == "ENRICHMENT_REQUIRED"
+            and source.get("gold_time_source") == "absolute_in_sentence"
+        ):
+            time_gap = classify_absolute_time_gap(_text(source.get("sentence")))
+            time_gap_subtype = time_gap.subtype
+            time_gap_auto_fill_allowed = time_gap.auto_fill_allowed
+            next_action = time_gap.next_action
         rows.append(
             {
                 "claim_id": claim_id,
@@ -55,6 +67,8 @@ def replay_r2_flexible_gold(
                 "flexible_route": route,
                 "route_reason": route_reason,
                 "next_action": next_action,
+                "time_gap_subtype": time_gap_subtype,
+                "time_gap_auto_fill_allowed": time_gap_auto_fill_allowed,
                 "target_value_role_status": "MISSING_IN_FROZEN_R2_GOLD",
                 "runtime_r3_admission": (
                     "BLOCKED_UNTIL_TARGET_VALUE_ROLE"
@@ -81,6 +95,7 @@ def summarize_r2_flexible_gold(rows: Iterable[dict[str, Any]]) -> dict[str, Any]
         "missing_required_slot_counts": _missing_counts(row_list),
         "route_by_split": _cross_counts(row_list, "split", "flexible_route"),
         "route_by_gold_time_source": _cross_counts(row_list, "gold_time_source", "flexible_route"),
+        "absolute_time_gap_subtype_counts": _nonempty_counts(row_list, "time_gap_subtype"),
         "runtime_r3_admission_counts": _counts(row_list, "runtime_r3_admission"),
     }
 
@@ -133,6 +148,11 @@ def _counts(rows: Iterable[dict[str, Any]], field: str) -> dict[str, int]:
 
 def _missing_counts(rows: Iterable[dict[str, Any]]) -> dict[str, int]:
     counts = Counter(",".join(row["missing_required_slots"]) or "NONE" for row in rows)
+    return dict(sorted(counts.items()))
+
+
+def _nonempty_counts(rows: Iterable[dict[str, Any]], field: str) -> dict[str, int]:
+    counts = Counter(str(row[field]) for row in rows if row.get(field))
     return dict(sorted(counts.items()))
 
 
