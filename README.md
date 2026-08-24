@@ -39,6 +39,8 @@ Guard unchanged, separates catalog coverage from slot/metadata conflicts, and
 does not treat a surviving candidate as a selected or correct KOSIS table.
 A Korean team handoff is available at
 `output/pdf/CLAFACT_Hard_Guard_KOSIS_연결_방법_20260824.pdf`.
+The same explanation is available as editable Markdown at
+`output/md/CLAFACT_Hard_Guard_KOSIS_연결_방법_20260824.md`.
 
 ## Safety boundary
 
