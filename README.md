@@ -28,6 +28,11 @@ model quality.
 The detailed learning contract is in
 `overlay/docs/reference/19_BOOTCAMP_EDUCATIONAL_DIRECTION.md`.
 
+The first bounded R3 candidate-retrieval experiment is documented in
+`overlay/docs/reference/21_R3_KOSIS_CANDIDATE_RETRIEVAL.md`. It improves
+official-candidate attachment coverage while keeping table selection,
+Hard Guard, Evidence Cell, and accuracy claims separate.
+
 ## Safety boundary
 
 - One controller mode per invocation.
