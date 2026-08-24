@@ -32,6 +32,38 @@ class UnsafeReasonExtractor:
         )
 
 
+class MissingRelativeTimeExtractor:
+    def extract(self, source_sentence: str) -> ClaimSchema:
+        return ClaimSchema(
+            claim_id="ignored",
+            source_sentence=source_sentence,
+            indicator="취업자 수",
+            value=100000,
+            target_value_role="CHANGE_VALUE",
+            unit="명",
+            time=None,
+            frequency=None,
+            calculation="DIFFERENCE",
+            parse_status="AUTO_OK",
+        )
+
+
+class MissingValueUnitExtractor:
+    def extract(self, source_sentence: str) -> ClaimSchema:
+        return ClaimSchema(
+            claim_id="ignored",
+            source_sentence=source_sentence,
+            indicator="취업자 수",
+            value=None,
+            target_value_role="CHANGE_VALUE",
+            unit=None,
+            time="2025년",
+            frequency="년",
+            calculation="DIFFERENCE",
+            parse_status="AUTO_OK",
+        )
+
+
 def test_r2_routes_only_atomic_factual_value_traced_claims_to_r3() -> None:
     candidates = [
         R1Candidate(
@@ -76,3 +108,58 @@ def test_r2_redacts_provider_prose_from_operational_reason_codes() -> None:
     result = run_r2_pipeline([candidate], extractor=UnsafeReasonExtractor())
 
     assert result.holds[0].reason_code == "R2_CLAIM_PARSE_NOT_AUTO_OK"
+
+
+def test_r2_revalidates_missing_slots_after_relative_time_enrichment() -> None:
+    candidate = R1Candidate(
+        article_id="a1",
+        published_at=date(2025, 5, 2),
+        content_provenance="RSS_FULL_TEXT",
+        claim_candidate_id="c1",
+        sentence_index=1,
+        source_sentence="지난달 취업자는 10만명 증가했다.",
+    )
+
+    result = run_r2_pipeline([candidate], extractor=MissingRelativeTimeExtractor())
+
+    assert len(result.r3_ready) == 1
+    assert result.r3_ready[0].claim.time == "2025년 4월"
+    assert result.r3_ready[0].claim.frequency == "월"
+    assert result.holds == []
+    assert result.enrichment_required == []
+
+
+def test_r2_routes_only_time_frequency_gap_to_enrichment_queue() -> None:
+    candidate = R1Candidate(
+        article_id="a1",
+        published_at=date(2025, 5, 2),
+        content_provenance="RSS_FULL_TEXT",
+        claim_candidate_id="c1",
+        sentence_index=1,
+        source_sentence="최근 취업자는 10만명 증가했다.",
+    )
+
+    result = run_r2_pipeline([candidate], extractor=MissingRelativeTimeExtractor())
+
+    assert result.r3_ready == []
+    assert result.holds == []
+    assert len(result.enrichment_required) == 1
+    assert result.enrichment_required[0].missing_slots == ("time", "frequency")
+    assert result.enrichment_required[0].next_action == "RECOVER_TIME_FREQUENCY_FROM_ARTICLE_CONTEXT"
+
+
+def test_r2_hold_explains_non_enrichable_missing_slots() -> None:
+    candidate = R1Candidate(
+        article_id="a1",
+        published_at=date(2025, 5, 2),
+        content_provenance="RSS_FULL_TEXT",
+        claim_candidate_id="c1",
+        sentence_index=1,
+        source_sentence="2025년 취업자는 10만명 증가했다.",
+    )
+
+    result = run_r2_pipeline([candidate], extractor=MissingValueUnitExtractor())
+
+    assert result.enrichment_required == []
+    assert result.holds[0].missing_slots == ("value", "unit")
+    assert result.holds[0].next_action == "REEXTRACT_OR_REVIEW_REQUIRED_SLOTS"
