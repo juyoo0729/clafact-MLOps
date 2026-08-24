@@ -1,6 +1,6 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 42,
+  "file_count": 47,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
@@ -75,6 +75,12 @@
       "executable": false
     },
     {
+      "path": "core/r3_hard_guard_readiness.py",
+      "sha256": "1518a8a97c277c88258122ffcf522c83065d8d670778bf971350f6f797b940ca",
+      "bytes": 7277,
+      "executable": false
+    },
+    {
       "path": "core/r3_kosis_candidate_retrieval.py",
       "sha256": "b8b344d3ac664860582b5414fddcdcf2d15304f02049d171dddf3dffefb5ca02",
       "bytes": 10223,
@@ -102,6 +108,12 @@
       "path": "docs/reference/21_R3_KOSIS_CANDIDATE_RETRIEVAL.md",
       "sha256": "1b5962b466e7e1f262144584b14ddf1ec7154610d2ffbbe319e6f56ac6064594",
       "bytes": 5900,
+      "executable": false
+    },
+    {
+      "path": "docs/reference/22_R3_HARD_GUARD_READINESS.md",
+      "sha256": "165969ca104570d308ca2163e8df1786ab411869f4a6b40a8943398001181904",
+      "bytes": 6731,
       "executable": false
     },
     {
@@ -165,6 +177,12 @@
       "executable": false
     },
     {
+      "path": "tests/unit/test_r3_hard_guard_readiness.py",
+      "sha256": "c684a7b80e2cec5a30e8db4a0a2a1095478830b31f2e3c303cc14fe250d9f00b",
+      "bytes": 2653,
+      "executable": false
+    },
+    {
       "path": "tests/unit/test_r3_kosis_candidate_retrieval.py",
       "sha256": "9f815b7bb4001eaf29d6e2ecdfdf4413ed9597a37bd6b1c9fbebe9716d111da5",
       "bytes": 3894,
@@ -186,6 +204,12 @@
       "path": "tests/unit/test_run_r2_flexible_gold_replay.py",
       "sha256": "b4974a6b5c51f3651c659e89607102accff2d3b1496eb92c19b066ca8b0e050a",
       "bytes": 1618,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_run_r3_hard_guard_readiness.py",
+      "sha256": "d0d1fd77e2fde6f39306e81b67baec175676539f568d76cd0c3230ce8e069b4b",
+      "bytes": 2686,
       "executable": false
     },
     {
@@ -246,6 +270,12 @@
       "path": "tools/run_r2_flexible_gold_replay.py",
       "sha256": "f7c3006a8d66b7096528795ecaca4a61c255f7dfbf37a52b377ab8b563c5362e",
       "bytes": 3213,
+      "executable": false
+    },
+    {
+      "path": "tools/run_r3_hard_guard_readiness.py",
+      "sha256": "ec6acad0d219b82cdffd8c216ac78d587b807627a67d33cc1c811bb2e28851dc",
+      "bytes": 8674,
       "executable": false
     },
     {

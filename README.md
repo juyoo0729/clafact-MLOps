@@ -33,6 +33,13 @@ The first bounded R3 candidate-retrieval experiment is documented in
 official-candidate attachment coverage while keeping table selection,
 Hard Guard, Evidence Cell, and accuracy claims separate.
 
+The follow-up structural Hard Guard replay is documented in
+`overlay/docs/reference/22_R3_HARD_GUARD_READINESS.md`. It keeps the existing
+Guard unchanged, separates catalog coverage from slot/metadata conflicts, and
+does not treat a surviving candidate as a selected or correct KOSIS table.
+A Korean team handoff is available at
+`output/pdf/CLAFACT_Hard_Guard_KOSIS_연결_방법_20260824.pdf`.
+
 ## Safety boundary
 
 - One controller mode per invocation.
