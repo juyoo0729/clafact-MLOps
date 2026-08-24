@@ -1,6 +1,6 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 42,
+  "file_count": 47,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
@@ -75,6 +75,12 @@
       "executable": false
     },
     {
+      "path": "core/r3_embedding_fallback.py",
+      "sha256": "e0376bf6e6fffce15d1acdea00ff51c40b4105b4e1aa1499030b54b70a01003a",
+      "bytes": 4907,
+      "executable": false
+    },
+    {
       "path": "core/r3_kosis_candidate_retrieval.py",
       "sha256": "b8b344d3ac664860582b5414fddcdcf2d15304f02049d171dddf3dffefb5ca02",
       "bytes": 10223,
@@ -102,6 +108,12 @@
       "path": "docs/reference/21_R3_KOSIS_CANDIDATE_RETRIEVAL.md",
       "sha256": "1b5962b466e7e1f262144584b14ddf1ec7154610d2ffbbe319e6f56ac6064594",
       "bytes": 5900,
+      "executable": false
+    },
+    {
+      "path": "docs/reference/22_R3_EMBEDDING_FALLBACK_NOT_IMPROVED.md",
+      "sha256": "e3b85b21ec3c304a06a1a4fc0c1bd36847b77f8e84544404175b04d759e90b3d",
+      "bytes": 4992,
       "executable": false
     },
     {
@@ -165,6 +177,12 @@
       "executable": false
     },
     {
+      "path": "tests/unit/test_r3_embedding_fallback.py",
+      "sha256": "0f15271146b11663c33e926ae0a9d3c10d2df0a4faebae10ae25ef0cba1dbb09",
+      "bytes": 1811,
+      "executable": false
+    },
+    {
       "path": "tests/unit/test_r3_kosis_candidate_retrieval.py",
       "sha256": "9f815b7bb4001eaf29d6e2ecdfdf4413ed9597a37bd6b1c9fbebe9716d111da5",
       "bytes": 3894,
@@ -186,6 +204,12 @@
       "path": "tests/unit/test_run_r2_flexible_gold_replay.py",
       "sha256": "b4974a6b5c51f3651c659e89607102accff2d3b1496eb92c19b066ca8b0e050a",
       "bytes": 1618,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_run_r3_embedding_fallback.py",
+      "sha256": "e80f4ebfdf4149ff861237b1a32afd4294b59c2e07d65f629a00085c636d11f7",
+      "bytes": 2083,
       "executable": false
     },
     {
@@ -246,6 +270,12 @@
       "path": "tools/run_r2_flexible_gold_replay.py",
       "sha256": "f7c3006a8d66b7096528795ecaca4a61c255f7dfbf37a52b377ab8b563c5362e",
       "bytes": 3213,
+      "executable": false
+    },
+    {
+      "path": "tools/run_r3_embedding_fallback.py",
+      "sha256": "fed1aea53aa1fff83335c21934f8e2de860f06a3b5fc6893346c9544b0c42794",
+      "bytes": 10950,
       "executable": false
     },
     {

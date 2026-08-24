@@ -33,6 +33,11 @@ The first bounded R3 candidate-retrieval experiment is documented in
 official-candidate attachment coverage while keeping table selection,
 Hard Guard, Evidence Cell, and accuracy claims separate.
 
+The follow-up embedding fallback is preserved in
+`overlay/docs/reference/22_R3_EMBEDDING_FALLBACK_NOT_IMPROVED.md`. Its frozen
+dev proxy did not improve, so it remains optional and was not promoted to the
+locked full replay.
+
 ## Safety boundary
 
 - One controller mode per invocation.
