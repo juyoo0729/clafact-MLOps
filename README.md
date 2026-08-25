@@ -45,6 +45,10 @@ The full-ledger registry replay is documented in
 `overlay/docs/reference/24_R3_REGISTRY_FULL_VALUE_REPLAY.md`. It joins all
 1,542 Claim IDs, reinforces a provisional composite-signature registry, and
 deduplicates exact official-cell requests while preserving unresolved HOLDs.
+The D1 structure-metadata replay is documented in
+`overlay/docs/reference/25_D1_METADATA_FAILURE_REPLAY.md`. It freezes the exact
+failure cohort from one execution history and wires live KOSIS table search
+plus ITM/PRD metadata into R3 without weakening Hard Guard.
 A Korean team handoff is available at
 `output/pdf/CLAFACT_Hard_Guard_KOSIS_연결_방법_20260824.pdf`.
 The same explanation is available as editable Markdown at

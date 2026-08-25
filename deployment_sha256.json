@@ -1,6 +1,6 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 57,
+  "file_count": 64,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
@@ -18,6 +18,18 @@
       "path": "config/mlops_automation.example.json",
       "sha256": "3e31797f5aa73609735eb6752bcc16451dbb791dd510af8711e601712550be25",
       "bytes": 3273,
+      "executable": false
+    },
+    {
+      "path": "core/execution_failure_cohort.py",
+      "sha256": "d4c3ee3df4b0095a0d4d90e13b346aa4b24d2da80771c9b38ee4103af2d28d54",
+      "bytes": 3500,
+      "executable": false
+    },
+    {
+      "path": "core/execution_ledger.py",
+      "sha256": "1b27df6b710f314acd2cedc6e2738815926fdddef1463b2955dc31f957e47648",
+      "bytes": 17763,
       "executable": false
     },
     {
@@ -141,9 +153,21 @@
       "executable": false
     },
     {
+      "path": "docs/reference/25_D1_METADATA_FAILURE_REPLAY.md",
+      "sha256": "16743b9d4d3a606323cac3b4615eae53e2b02853c12524c2c9fa0e4f6fe2908c",
+      "bytes": 3478,
+      "executable": false
+    },
+    {
       "path": "tests/goldset/fixtures/pilot20_r2_frozen_gold_claims_v1.json",
       "sha256": "54e8232518c723fe2723b39b65237e4e69181b54b42cd1c41d51852cb36a326f",
       "bytes": 13266,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_execution_failure_cohort.py",
+      "sha256": "d7ff371a2b4cbdc72c2137d71f0327e9bdec82f6c09777bef12e16c5b29383f0",
+      "bytes": 3421,
       "executable": false
     },
     {
@@ -225,6 +249,12 @@
       "executable": false
     },
     {
+      "path": "tests/unit/test_run_execution_batch.py",
+      "sha256": "d4c54b785ec5a21b40449fcf8692d757f5ea082105fd9644b14edeb310f22096",
+      "bytes": 2448,
+      "executable": false
+    },
+    {
       "path": "tests/unit/test_run_gold_replay.py",
       "sha256": "1e9ead39f0a5c819141bfc19fe5041f67456a4c40b92e2f18ad5b5d79deaee8c",
       "bytes": 4712,
@@ -264,6 +294,18 @@
       "path": "tests/unit/test_run_r3_registry_full_value_replay.py",
       "sha256": "c91bd0ab3c6e028918af7e17b6548a4785d8c3858d740de605494eee3e2bae92",
       "bytes": 7283,
+      "executable": false
+    },
+    {
+      "path": "tools/build_execution_failure_cohort.py",
+      "sha256": "836adde85781743d92bd68ee32d26833bdc25fb50a44154ddc4f9277d4c90470",
+      "bytes": 1375,
+      "executable": false
+    },
+    {
+      "path": "tools/run_execution_batch.py",
+      "sha256": "e455a233b87866841205f7f65970785a0184172840c0606183560f2f73d4895a",
+      "bytes": 16634,
       "executable": false
     },
     {
