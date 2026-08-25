@@ -74,6 +74,12 @@ attempts. It leaves KOSIS lookup blocked until the accepted Claims are rebuilt
 as 12-slot records with an explicit target value role. The bounded
 `tools.build_r2_multimethod_reentry_queue` command materializes that next-stage
 queue without claiming that extraction or KOSIS lookup already succeeded.
+The fixed 20-row 12-slot re-entry pilot is documented in
+`overlay/docs/reference/30_R2_12SLOT_REENTRY_PILOT.md`. It passes article date
+and adjacent context to HCX, then independently checks required slots, source
+value grounding, period consistency, and category-2 target role/value/unit.
+Only 4 of 20 rows passed every deterministic Gate in the final pilot; KOSIS
+remained uncalled and accuracy remained not evaluable without linked Gold.
 A Korean team handoff is available at
 `output/pdf/CLAFACT_Hard_Guard_KOSIS_연결_방법_20260824.pdf`.
 The same explanation is available as editable Markdown at

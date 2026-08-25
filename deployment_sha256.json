@@ -1,6 +1,6 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 88,
+  "file_count": 95,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
@@ -183,6 +183,12 @@
       "executable": false
     },
     {
+      "path": "docs/reference/30_R2_12SLOT_REENTRY_PILOT.md",
+      "sha256": "d2b27599d8dd6aa8c52744e666253315fe3fe2c665fc4c12419762281dfdf19e",
+      "bytes": 6361,
+      "executable": false
+    },
+    {
       "path": "tests/goldset/fixtures/pilot20_r2_frozen_gold_claims_v1.json",
       "sha256": "54e8232518c723fe2723b39b65237e4e69181b54b42cd1c41d51852cb36a326f",
       "bytes": 13266,
@@ -207,9 +213,21 @@
       "executable": false
     },
     {
+      "path": "tests/unit/test_build_r2_12slot_reentry_pilot.py",
+      "sha256": "b98b86b197e0984398e4052fc74f78ef016ab5376717b9e70d1f3eb0305624f0",
+      "bytes": 1862,
+      "executable": false
+    },
+    {
       "path": "tests/unit/test_build_r2_multimethod_reentry_queue.py",
       "sha256": "be234c2c49ffa066a6f456becd61cca1b801d57258313fcf006ddab55a5552c5",
       "bytes": 1744,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_compare_r2_12slot_pilot_runs.py",
+      "sha256": "9acdfc262a677022dd74ace19d81e7cd97f4fba477f588e681bb95835a0f775f",
+      "bytes": 1245,
       "executable": false
     },
     {
@@ -351,6 +369,12 @@
       "executable": false
     },
     {
+      "path": "tests/unit/test_run_r2_12slot_reentry_pilot.py",
+      "sha256": "0d08b6337cb369c8e19cd4df47d15134258e8966a6492f0ca0c7db8d454bf0c3",
+      "bytes": 6409,
+      "executable": false
+    },
+    {
       "path": "tests/unit/test_run_r2_flexible_gold_replay.py",
       "sha256": "b4974a6b5c51f3651c659e89607102accff2d3b1496eb92c19b066ca8b0e050a",
       "bytes": 1618,
@@ -405,9 +429,21 @@
       "executable": false
     },
     {
+      "path": "tools/build_r2_12slot_reentry_pilot.py",
+      "sha256": "f0cc30efb80c2ed84488ec05235bc920a9563b14838284bf05af0a6b5e12acca",
+      "bytes": 6730,
+      "executable": false
+    },
+    {
       "path": "tools/build_r2_multimethod_reentry_queue.py",
       "sha256": "9521febd9e260d99b0ee60828ed360b073501f619053b2c65a72b7d35ab122b7",
       "bytes": 8677,
+      "executable": false
+    },
+    {
+      "path": "tools/compare_r2_12slot_pilot_runs.py",
+      "sha256": "cb0734fb89c7fac35fdb0c735defb7a60e63fd8e88013552fc52b2a20b935cac",
+      "bytes": 5445,
       "executable": false
     },
     {
@@ -492,6 +528,12 @@
       "path": "tools/run_mlops_gold_evaluation.py",
       "sha256": "cbc3ced2ce719dab10c03584818a890187717c0b00531616bdb5c12483066154",
       "bytes": 18834,
+      "executable": false
+    },
+    {
+      "path": "tools/run_r2_12slot_reentry_pilot.py",
+      "sha256": "dd344bdfd5988f9321116a6acca46c2d1908edd48cfe20897f0c1f69676a9c57",
+      "bytes": 19318,
       "executable": false
     },
     {
