@@ -1,6 +1,6 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 100,
+  "file_count": 101,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
@@ -196,8 +196,14 @@
     },
     {
       "path": "docs/reference/31_CATEGORIES_1_8_EXECUTION_LEDGER.md",
-      "sha256": "3440c0e27d7fb5b34ac8df94452953c158253205b7e2ad719c27566ae68d8241",
-      "bytes": 6472,
+      "sha256": "9663038d10ea78e41ae079ef0559f939b8ab2df0e8c06b9d0edd51e3bd587ba4",
+      "bytes": 6696,
+      "executable": false
+    },
+    {
+      "path": "docs/reference/32_CATEGORIES_1_8_EXPERIMENT_PROCESS.md",
+      "sha256": "ee00d5c1134cd2a5274ab2a1039aba06f6b0f5b015cd40b0295db30dbb62af1d",
+      "bytes": 5928,
       "executable": false
     },
     {

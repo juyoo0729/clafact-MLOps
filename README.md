@@ -87,6 +87,12 @@ extrema, rank, share, change, growth-rate, and direct-value Claims. The stored
 1,542-Claim replay records every status, stop stage, KOSIS reach state,
 coordinate, official value, six-W event, and next action while keeping
 official-value coverage separate from article-as-of and Gold-linked accuracy.
+The presentation-first experiment narrative is documented in
+`overlay/docs/reference/32_CATEGORIES_1_8_EXPERIMENT_PROCESS.md`. It preserves
+the baseline, hypothesis, initial failing test, minimal change, unsuccessful
+context attempt, environment and fixture mistakes, fixed-input reruns, honest
+measurement boundary, and next single experiment instead of presenting the
+latest completion count alone.
 A Korean team handoff is available at
 `output/pdf/CLAFACT_Hard_Guard_KOSIS_연결_방법_20260824.pdf`.
 The same explanation is available as editable Markdown at
