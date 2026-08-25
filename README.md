@@ -51,6 +51,10 @@ The D1 structure-metadata replay is documented in
 `overlay/docs/reference/25_D1_METADATA_FAILURE_REPLAY.md`. It freezes the exact
 failure cohort from one execution history and wires live KOSIS table search
 plus ITM/PRD metadata into R3 without weakening Hard Guard.
+The full-article execution audit is documented in
+`overlay/docs/reference/26_FULL_ARTICLE_EXECUTION_AUDIT.md`. It joins all 499
+source articles to 1,542 Claims and records every stored KOSIS metadata/value
+attempt, response hash, success, HOLD stage, and reason without recording keys.
 A Korean team handoff is available at
 `output/pdf/CLAFACT_Hard_Guard_KOSIS_연결_방법_20260824.pdf`.
 The same explanation is available as editable Markdown at

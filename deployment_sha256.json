@@ -1,6 +1,6 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 64,
+  "file_count": 67,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
@@ -159,9 +159,21 @@
       "executable": false
     },
     {
+      "path": "docs/reference/26_FULL_ARTICLE_EXECUTION_AUDIT.md",
+      "sha256": "7fd51176348357f72000bad4861cdfe00afb56e2cf405ea8b90bf5c7af48dc06",
+      "bytes": 5385,
+      "executable": false
+    },
+    {
       "path": "tests/goldset/fixtures/pilot20_r2_frozen_gold_claims_v1.json",
       "sha256": "54e8232518c723fe2723b39b65237e4e69181b54b42cd1c41d51852cb36a326f",
       "bytes": 13266,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_build_full_article_audit_ledger.py",
+      "sha256": "9f037541923f8e8e91031ad394e6a4c6303a19f8da635c7eda0efa531d177577",
+      "bytes": 6105,
       "executable": false
     },
     {
@@ -294,6 +306,12 @@
       "path": "tests/unit/test_run_r3_registry_full_value_replay.py",
       "sha256": "cf81b04e2159bc9b4fc23a48758fbb692e66e984e8688fefc9ead5ec1046c7e9",
       "bytes": 8659,
+      "executable": false
+    },
+    {
+      "path": "tools/build_full_article_audit_ledger.py",
+      "sha256": "069a3365040d9fa2ff2823eb8b0f9657a991d1b0873f6538de8842f027457edf",
+      "bytes": 34942,
       "executable": false
     },
     {
