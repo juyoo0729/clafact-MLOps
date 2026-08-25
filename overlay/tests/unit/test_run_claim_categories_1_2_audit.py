@@ -5,7 +5,7 @@ from datetime import date
 from openpyxl import load_workbook
 
 from tools.run_claim_categories_1_2_audit import run, refresh_output_manifest
-from tools.run_claim_categories_1_2_audit import _coverage_method, _quantities
+from tools.run_claim_categories_1_2_audit import _canonical_target, _coverage_method, _quantities
 
 
 def _write_csv(path, rows):
@@ -196,3 +196,8 @@ def test_respectively_allows_only_explicit_controlled_target_reuse():
         ["0.4%포인트", "0.2%포인트"],
         ["0.4%포인트", "0.2%포인트", "0.2%포인트"],
     ) == ""
+
+
+def test_unitless_provider_target_is_canonicalized_to_child_quantity():
+    assert _canonical_target("9", ["9개"]) == "9개"
+    assert _canonical_target("92%", ["92%대"]) == "92%대"

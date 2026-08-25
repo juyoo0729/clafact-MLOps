@@ -66,6 +66,14 @@ LLM only after deterministic HOLD, then accepts a proposal only when article
 evidence, period normalization, target-number grounding, and parent-child
 coverage pass deterministic checks. Stage success remains separate from Gold
 accuracy and from KOSIS official-value completion.
+The multi-method cascade is documented in
+`overlay/docs/reference/29_CATEGORIES_1_2_MULTIMETHOD_CASCADE.md`. It compares
+six offline split rules, preserves guarded OpenAI successes, applies HCX only
+to the remaining HOLD cohort, and records both improved and not-improved
+attempts. It leaves KOSIS lookup blocked until the accepted Claims are rebuilt
+as 12-slot records with an explicit target value role. The bounded
+`tools.build_r2_multimethod_reentry_queue` command materializes that next-stage
+queue without claiming that extraction or KOSIS lookup already succeeded.
 A Korean team handoff is available at
 `output/pdf/CLAFACT_Hard_Guard_KOSIS_연결_방법_20260824.pdf`.
 The same explanation is available as editable Markdown at

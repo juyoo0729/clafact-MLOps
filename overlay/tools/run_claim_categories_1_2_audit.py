@@ -41,7 +41,7 @@ PARENT_COLUMNS = (
 
 CHILD_COLUMNS = (
     "기사번호", "부모Claim번호", "부모최종실행상태", "자식Claim번호", "자식순번", "부모원문", "자식Claim",
-    "목표수치", "target_value_role", "자식수치수", "수치원문존재", "자식검증상태",
+    "목표수치", "정규화목표수치", "target_value_role", "자식수치수", "수치원문존재", "자식검증상태",
     "성공실패사유", "12슬롯상태", "KOSIS재조회상태", "누가", "언제", "어디서",
     "무엇을", "어떻게", "왜",
 )
@@ -283,21 +283,19 @@ def execute_split_claim(
         target = _text(raw_child.get("target_value_text")) if isinstance(raw_child, Mapping) else ""
         if not target and len(quantities) == 1:
             target = quantities[0]
+        canonical_target = _canonical_target(target, quantities)
         role = _text(raw_child.get("target_value_role")) if isinstance(raw_child, Mapping) else ""
         if not role and target:
             role = _infer_role(text)
-        grounded = bool(target) and _normalize(target) in _normalize(sentence)
+        grounded = bool(canonical_target) and _normalize(canonical_target) in _normalize(sentence)
         child_status = "VALID" if len(quantities) == 1 and grounded else "HOLD"
         child_reason = (
             "SINGLE_TARGET_VALUE_SOURCE_GROUNDED"
             if child_status == "VALID"
             else "CHILD_TARGET_COUNT_OR_GROUNDING_FAILED"
         )
-        target_quantities = _quantities(target)
-        if target:
-            child_targets.append(_normalize(
-                target_quantities[0] if len(target_quantities) == 1 else target
-            ))
+        if canonical_target:
+            child_targets.append(_normalize(canonical_target))
         child_id = f"{_text(row.get('Claim번호'))}__S{index:02d}"
         children.append(
             {
@@ -308,6 +306,7 @@ def execute_split_claim(
                 "부모원문": sentence,
                 "자식Claim": text,
                 "목표수치": target,
+                "정규화목표수치": canonical_target,
                 "target_value_role": role,
                 "자식수치수": len(quantities),
                 "수치원문존재": "YES" if grounded else "NO",
@@ -566,6 +565,19 @@ def _quantities(text: str) -> list[str]:
 
 def _normalize(text: str) -> str:
     return re.sub(r"\s+", "", text).casefold()
+
+
+def _canonical_target(target: str, child_quantities: Sequence[str]) -> str:
+    if not target:
+        return child_quantities[0] if len(child_quantities) == 1 else ""
+    if len(child_quantities) != 1:
+        return target
+    quantity = child_quantities[0]
+    normalized_target = _normalize(target)
+    normalized_quantity = _normalize(quantity)
+    if normalized_target in normalized_quantity or normalized_quantity in normalized_target:
+        return quantity
+    return target
 
 
 def _coverage_method(

@@ -1,6 +1,6 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 77,
+  "file_count": 88,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
@@ -177,9 +177,27 @@
       "executable": false
     },
     {
+      "path": "docs/reference/29_CATEGORIES_1_2_MULTIMETHOD_CASCADE.md",
+      "sha256": "54ae6ccd3340236f1c6f6a926d64b0f5f18eb3d833898a50b4ea0d33c8b2321e",
+      "bytes": 5137,
+      "executable": false
+    },
+    {
       "path": "tests/goldset/fixtures/pilot20_r2_frozen_gold_claims_v1.json",
       "sha256": "54e8232518c723fe2723b39b65237e4e69181b54b42cd1c41d51852cb36a326f",
       "bytes": 13266,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_build_claim_categories_1_2_multimethod_combined.py",
+      "sha256": "17594149c7d69815f7ec7c041780289c2287a104ed1643a404d5f1e139df6d6b",
+      "bytes": 2296,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_build_claim_categories_1_2_strong_combined.py",
+      "sha256": "490f2fa73d0790ebb860694ae1752f1bea0dc099d0a968b4b7b848bfdd83e587",
+      "bytes": 1824,
       "executable": false
     },
     {
@@ -189,9 +207,9 @@
       "executable": false
     },
     {
-      "path": "tests/unit/test_build_claim_categories_1_2_strong_combined.py",
-      "sha256": "490f2fa73d0790ebb860694ae1752f1bea0dc099d0a968b4b7b848bfdd83e587",
-      "bytes": 1824,
+      "path": "tests/unit/test_build_r2_multimethod_reentry_queue.py",
+      "sha256": "be234c2c49ffa066a6f456becd61cca1b801d57258313fcf006ddab55a5552c5",
+      "bytes": 1744,
       "executable": false
     },
     {
@@ -279,15 +297,15 @@
       "executable": false
     },
     {
-      "path": "tests/unit/test_run_execution_batch.py",
-      "sha256": "d4c54b785ec5a21b40449fcf8692d757f5ea082105fd9644b14edeb310f22096",
-      "bytes": 2448,
+      "path": "tests/unit/test_run_claim_categories_1_2_audit.py",
+      "sha256": "2c48410a2be0298940624e5bfac75a7bca91b4df07bb74e71ee2603bc13bf75c",
+      "bytes": 7892,
       "executable": false
     },
     {
-      "path": "tests/unit/test_run_claim_categories_1_2_audit.py",
-      "sha256": "19288aa90e3245c3856946ef9cd3b470afedb68025154e32a9998df61490346e",
-      "bytes": 7685,
+      "path": "tests/unit/test_run_claim_category1_provider_cascade.py",
+      "sha256": "e852ec2e35438b4ecc585876eb40c0b85aa9a7d829f57a03b01f69d1457b8dd8",
+      "bytes": 2228,
       "executable": false
     },
     {
@@ -297,9 +315,27 @@
       "executable": false
     },
     {
+      "path": "tests/unit/test_run_claim_category2_provider_cascade.py",
+      "sha256": "ccfcc520f4fc2573f74a43e7dcda6e4a4bcaa71745ba5c528557e6fff0f31c63",
+      "bytes": 2628,
+      "executable": false
+    },
+    {
       "path": "tests/unit/test_run_claim_category2_strong_replay.py",
       "sha256": "35df2d433eb7890395fae8491b4f42a200a16ba82fbd0daddec8b9a2cb2583aa",
       "bytes": 2849,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_run_claim_split_multimethod_benchmark.py",
+      "sha256": "b3f4d5c3e34a4bb46f9c4d2e90475ad7c7142db0eba7fb9d7f1e6d39ba3c1ae6",
+      "bytes": 1624,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_run_execution_batch.py",
+      "sha256": "d4c54b785ec5a21b40449fcf8692d757f5ea082105fd9644b14edeb310f22096",
+      "bytes": 2448,
       "executable": false
     },
     {
@@ -345,9 +381,9 @@
       "executable": false
     },
     {
-      "path": "tools/build_full_article_audit_ledger.py",
-      "sha256": "069a3365040d9fa2ff2823eb8b0f9657a991d1b0873f6538de8842f027457edf",
-      "bytes": 34942,
+      "path": "tools/build_claim_categories_1_2_multimethod_combined.py",
+      "sha256": "ed4525847d8d9f9a10b80be466c14fd459baf40748016dea682ffe02bf57bb06",
+      "bytes": 14492,
       "executable": false
     },
     {
@@ -363,9 +399,27 @@
       "executable": false
     },
     {
+      "path": "tools/build_full_article_audit_ledger.py",
+      "sha256": "069a3365040d9fa2ff2823eb8b0f9657a991d1b0873f6538de8842f027457edf",
+      "bytes": 34942,
+      "executable": false
+    },
+    {
+      "path": "tools/build_r2_multimethod_reentry_queue.py",
+      "sha256": "9521febd9e260d99b0ee60828ed360b073501f619053b2c65a72b7d35ab122b7",
+      "bytes": 8677,
+      "executable": false
+    },
+    {
       "path": "tools/run_claim_categories_1_2_audit.py",
-      "sha256": "55594099e72af169a50610592116db5dbc242bc940d22ce7d4b56db7833392b0",
-      "bytes": 43275,
+      "sha256": "2312dba9b0cd46a1304c506c5583fc847744215e972df651ee444083e14e31fb",
+      "bytes": 43816,
+      "executable": false
+    },
+    {
+      "path": "tools/run_claim_category1_provider_cascade.py",
+      "sha256": "0b8bf3960d1d0b99d7819bb8df5a1ce6f722e0e89b3f903365c2398290d78b0c",
+      "bytes": 12668,
       "executable": false
     },
     {
@@ -375,9 +429,21 @@
       "executable": false
     },
     {
+      "path": "tools/run_claim_category2_provider_cascade.py",
+      "sha256": "3b7ca9b458c7380d136e2a2fe1c9e43c082ff26e000d7a9dfa8a870e35c53df9",
+      "bytes": 13784,
+      "executable": false
+    },
+    {
       "path": "tools/run_claim_category2_strong_replay.py",
       "sha256": "f62b2800e3c20ede05c4e89bb6ab4613d77d9bd1cbe7c4b9c64cb7047618387c",
       "bytes": 13150,
+      "executable": false
+    },
+    {
+      "path": "tools/run_claim_split_multimethod_benchmark.py",
+      "sha256": "ee0e0d355e8e4ba235ef96daf991a210f5faa6140edc93002fd00863ed5bdcbc",
+      "bytes": 8498,
       "executable": false
     },
     {
