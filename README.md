@@ -60,6 +60,12 @@ The category 1/2 six-W execution is documented in
 latest 256 context-completion and 339 multi-Claim rows, validates conservative
 period resolution and atomic splitting, and records success/HOLD evidence as
 992 who/when/where/what/how/why events before any new KOSIS call.
+The stronger second-pass replay is documented in
+`overlay/docs/reference/28_CATEGORIES_1_2_STRONG_LLM_REPLAY.md`. It applies an
+LLM only after deterministic HOLD, then accepts a proposal only when article
+evidence, period normalization, target-number grounding, and parent-child
+coverage pass deterministic checks. Stage success remains separate from Gold
+accuracy and from KOSIS official-value completion.
 A Korean team handoff is available at
 `output/pdf/CLAFACT_Hard_Guard_KOSIS_연결_방법_20260824.pdf`.
 The same explanation is available as editable Markdown at

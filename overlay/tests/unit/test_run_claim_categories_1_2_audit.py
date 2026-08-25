@@ -5,6 +5,7 @@ from datetime import date
 from openpyxl import load_workbook
 
 from tools.run_claim_categories_1_2_audit import run, refresh_output_manifest
+from tools.run_claim_categories_1_2_audit import _coverage_method, _quantities
 
 
 def _write_csv(path, rows):
@@ -174,3 +175,24 @@ def test_context_period_prefers_relative_target_and_rejects_conflicting_context(
     assert absolute_candidate["reason_code"] == (
         "CONTEXT_ABSOLUTE_PERIOD_CANDIDATE_REQUIRES_SEMANTIC_LINK"
     )
+
+
+def test_quantities_preserve_signed_and_approximate_expressions():
+    assert _quantities("-0.8%포인트에서 0.1%포인트로 올랐다") == [
+        "-0.8%포인트", "0.1%포인트",
+    ]
+    assert _quantities("수입산 돼지고기 92%대다") == ["92%대"]
+
+
+def test_respectively_allows_only_explicit_controlled_target_reuse():
+    sentence = "2016년에는 0.4%포인트였고 2017년 1~2월에는 각각 0.2%포인트씩이었다."
+    assert _coverage_method(
+        sentence,
+        ["0.4%포인트", "0.2%포인트"],
+        ["0.4%포인트", "0.2%포인트", "0.2%포인트"],
+    ) == "CONTROLLED_RESPECTIVELY_REUSE"
+    assert _coverage_method(
+        sentence.replace("각각", "모두"),
+        ["0.4%포인트", "0.2%포인트"],
+        ["0.4%포인트", "0.2%포인트", "0.2%포인트"],
+    ) == ""

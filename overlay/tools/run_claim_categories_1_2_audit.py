@@ -34,7 +34,7 @@ CONTEXT_COLUMNS = (
 PARENT_COLUMNS = (
     "기사번호", "부모Claim번호", "작성일", "제목", "URL", "원문", "앞문맥", "뒤문맥",
     "하위유형", "분리방법", "분리경로", "분리reason_code", "부모수치수", "생성자식수",
-    "수치전수보존", "모든자식단일목표값", "최종실행상태", "성공실패사유", "중단단계",
+    "수치전수보존", "수치보존방식", "모든자식단일목표값", "최종실행상태", "성공실패사유", "중단단계",
     "기존KOSIS상태", "기존KOSIS사유", "KOSIS재조회상태", "다음실행단계",
     "누가", "언제", "어디서", "무엇을", "어떻게", "왜",
 )
@@ -64,8 +64,9 @@ OUTPUT_NAMES = (
 )
 
 _QUANTITY_RE = re.compile(
-    r"\d+(?:[.,]\d+)*(?:\s*(?:조|억|만|천)\s*\d*(?:[.,]\d+)*)*\s*"
+    r"[+\-−]?\d+(?:[.,]\d+)*(?:\s*(?:조|억|만|천)\s*\d*(?:[.,]\d+)*)*\s*"
     r"(?:%포인트|퍼센트포인트|%p|%|명|가구|원|건|개|대|배|달러|위|호|채|동|곳|척|톤|ha|㏊|헥타르)"
+    r"(?:대|가량|정도|안팎|이상|이하|초과|미만)?"
 )
 _AGENCIES = (
     "통계청", "한국은행", "관세청", "산업통상자원부", "기획재정부", "고용노동부",
@@ -292,8 +293,11 @@ def execute_split_claim(
             if child_status == "VALID"
             else "CHILD_TARGET_COUNT_OR_GROUNDING_FAILED"
         )
+        target_quantities = _quantities(target)
         if target:
-            child_targets.append(_normalize(target))
+            child_targets.append(_normalize(
+                target_quantities[0] if len(target_quantities) == 1 else target
+            ))
         child_id = f"{_text(row.get('Claim번호'))}__S{index:02d}"
         children.append(
             {
@@ -320,7 +324,8 @@ def execute_split_claim(
             }
         )
 
-    coverage = Counter(map(_normalize, parent_quantities)) == Counter(child_targets)
+    coverage_method = _coverage_method(sentence, parent_quantities, child_targets)
+    coverage = bool(coverage_method)
     all_single = bool(children) and all(child["자식검증상태"] == "VALID" for child in children)
     route = _text(result.get("route_status"))
     if route == "AUTO" and len(children) > 1 and coverage and all_single:
@@ -355,6 +360,7 @@ def execute_split_claim(
         "부모수치수": len(parent_quantities),
         "생성자식수": len(children),
         "수치전수보존": "YES" if coverage else "NO",
+        "수치보존방식": coverage_method or "MISMATCH",
         "모든자식단일목표값": "YES" if all_single else "NO",
         "최종실행상태": status,
         "성공실패사유": reason,
@@ -560,6 +566,25 @@ def _quantities(text: str) -> list[str]:
 
 def _normalize(text: str) -> str:
     return re.sub(r"\s+", "", text).casefold()
+
+
+def _coverage_method(
+    sentence: str, parent_quantities: Sequence[str], child_targets: Sequence[str]
+) -> str:
+    parent = Counter(map(_normalize, parent_quantities))
+    children = Counter(child_targets)
+    if parent == children:
+        return "EXACT_COUNTER"
+    marker = sentence.find("각각")
+    if marker < 0 or any(children[key] < count for key, count in parent.items()):
+        return ""
+    if any(key not in parent for key in children):
+        return ""
+    reusable = set(map(_normalize, _quantities(sentence[marker:])))
+    extras = {key for key, count in children.items() if count > parent[key]}
+    if extras and extras <= reusable:
+        return "CONTROLLED_RESPECTIVELY_REUSE"
+    return ""
 
 
 def _build_events(

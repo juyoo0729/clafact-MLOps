@@ -1,6 +1,6 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 70,
+  "file_count": 77,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
@@ -171,6 +171,12 @@
       "executable": false
     },
     {
+      "path": "docs/reference/28_CATEGORIES_1_2_STRONG_LLM_REPLAY.md",
+      "sha256": "4b8441f591dd6d873a78d2f9e293cb985a8770b4d35a3db00dac8a48538f99af",
+      "bytes": 6263,
+      "executable": false
+    },
+    {
       "path": "tests/goldset/fixtures/pilot20_r2_frozen_gold_claims_v1.json",
       "sha256": "54e8232518c723fe2723b39b65237e4e69181b54b42cd1c41d51852cb36a326f",
       "bytes": 13266,
@@ -180,6 +186,12 @@
       "path": "tests/unit/test_build_full_article_audit_ledger.py",
       "sha256": "9f037541923f8e8e91031ad394e6a4c6303a19f8da635c7eda0efa531d177577",
       "bytes": 6105,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_build_claim_categories_1_2_strong_combined.py",
+      "sha256": "490f2fa73d0790ebb860694ae1752f1bea0dc099d0a968b4b7b848bfdd83e587",
+      "bytes": 1824,
       "executable": false
     },
     {
@@ -274,8 +286,20 @@
     },
     {
       "path": "tests/unit/test_run_claim_categories_1_2_audit.py",
-      "sha256": "12b8f2152ba1981895723dfe56e9402f7ac15d556c73e912516429d7550a936f",
-      "bytes": 6773,
+      "sha256": "19288aa90e3245c3856946ef9cd3b470afedb68025154e32a9998df61490346e",
+      "bytes": 7685,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_run_claim_category1_strong_context_replay.py",
+      "sha256": "e98699c9b3ef0aa1f53714507697a0dd4607b27132aaa4d55268993b7df895ac",
+      "bytes": 2169,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_run_claim_category2_strong_replay.py",
+      "sha256": "35df2d433eb7890395fae8491b4f42a200a16ba82fbd0daddec8b9a2cb2583aa",
+      "bytes": 2849,
       "executable": false
     },
     {
@@ -327,6 +351,12 @@
       "executable": false
     },
     {
+      "path": "tools/build_claim_categories_1_2_strong_combined.py",
+      "sha256": "fe294920900923ba5d53cc47b5ba9de3058ce1f7a5dbb2def210b3b418cbd557",
+      "bytes": 5640,
+      "executable": false
+    },
+    {
       "path": "tools/build_execution_failure_cohort.py",
       "sha256": "836adde85781743d92bd68ee32d26833bdc25fb50a44154ddc4f9277d4c90470",
       "bytes": 1375,
@@ -334,8 +364,20 @@
     },
     {
       "path": "tools/run_claim_categories_1_2_audit.py",
-      "sha256": "472c626f7d3fcf0ec06ce115686f0129c637078ce809ea496a9fa76b9ddcbb11",
-      "bytes": 42229,
+      "sha256": "55594099e72af169a50610592116db5dbc242bc940d22ce7d4b56db7833392b0",
+      "bytes": 43275,
+      "executable": false
+    },
+    {
+      "path": "tools/run_claim_category1_strong_context_replay.py",
+      "sha256": "9bd8c1c2378d8c3d768b16e7201ad01007d9d24ec0a83cf8035b7ce6a498f70d",
+      "bytes": 17423,
+      "executable": false
+    },
+    {
+      "path": "tools/run_claim_category2_strong_replay.py",
+      "sha256": "f62b2800e3c20ede05c4e89bb6ab4613d77d9bd1cbe7c4b9c64cb7047618387c",
+      "bytes": 13150,
       "executable": false
     },
     {
