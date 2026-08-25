@@ -80,6 +80,13 @@ and adjacent context to HCX, then independently checks required slots, source
 value grounding, period consistency, and category-2 target role/value/unit.
 Only 4 of 20 rows passed every deterministic Gate in the final pilot; KOSIS
 remained uncalled and accuracy remained not evaluable without linked Gold.
+The full category 1-8 execution ledger is documented in
+`overlay/docs/reference/31_CATEGORIES_1_8_EXECUTION_LEDGER.md`. It assigns a
+different official-evidence shape to context completion, atomic splitting,
+extrema, rank, share, change, growth-rate, and direct-value Claims. The stored
+1,542-Claim replay records every status, stop stage, KOSIS reach state,
+coordinate, official value, six-W event, and next action while keeping
+official-value coverage separate from article-as-of and Gold-linked accuracy.
 A Korean team handoff is available at
 `output/pdf/CLAFACT_Hard_Guard_KOSIS_연결_방법_20260824.pdf`.
 The same explanation is available as editable Markdown at

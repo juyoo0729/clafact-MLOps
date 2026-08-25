@@ -1,6 +1,6 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 95,
+  "file_count": 100,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
@@ -18,6 +18,12 @@
       "path": "config/mlops_automation.example.json",
       "sha256": "3e31797f5aa73609735eb6752bcc16451dbb791dd510af8711e601712550be25",
       "bytes": 3273,
+      "executable": false
+    },
+    {
+      "path": "core/category_execution_plan.py",
+      "sha256": "e0bcf381ebcfc3610e244d47a0875608c19bf32e603c730b2afcabd02f30858e",
+      "bytes": 5291,
       "executable": false
     },
     {
@@ -189,6 +195,12 @@
       "executable": false
     },
     {
+      "path": "docs/reference/31_CATEGORIES_1_8_EXECUTION_LEDGER.md",
+      "sha256": "3440c0e27d7fb5b34ac8df94452953c158253205b7e2ad719c27566ae68d8241",
+      "bytes": 6472,
+      "executable": false
+    },
+    {
       "path": "tests/goldset/fixtures/pilot20_r2_frozen_gold_claims_v1.json",
       "sha256": "54e8232518c723fe2723b39b65237e4e69181b54b42cd1c41d51852cb36a326f",
       "bytes": 13266,
@@ -207,6 +219,12 @@
       "executable": false
     },
     {
+      "path": "tests/unit/test_build_claim_categories_1_8_execution.py",
+      "sha256": "cd4cc4100238bd3e292148e167fcf80aa13d838b7061068e7e5660b4504eb39e",
+      "bytes": 3886,
+      "executable": false
+    },
+    {
       "path": "tests/unit/test_build_full_article_audit_ledger.py",
       "sha256": "9f037541923f8e8e91031ad394e6a4c6303a19f8da635c7eda0efa531d177577",
       "bytes": 6105,
@@ -222,6 +240,12 @@
       "path": "tests/unit/test_build_r2_multimethod_reentry_queue.py",
       "sha256": "be234c2c49ffa066a6f456becd61cca1b801d57258313fcf006ddab55a5552c5",
       "bytes": 1744,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_category_execution_plan.py",
+      "sha256": "1a7f36aaa1a6e6298d02f70ab89b97efed35308e5adb2a8e7a551ce25785316c",
+      "bytes": 1950,
       "executable": false
     },
     {
@@ -414,6 +438,12 @@
       "path": "tools/build_claim_categories_1_2_strong_combined.py",
       "sha256": "fe294920900923ba5d53cc47b5ba9de3058ce1f7a5dbb2def210b3b418cbd557",
       "bytes": 5640,
+      "executable": false
+    },
+    {
+      "path": "tools/build_claim_categories_1_8_execution.py",
+      "sha256": "e87513d812eca96405b8f5c5951a3e4a234cee93ec60f3274714254240e25f0f",
+      "bytes": 21086,
       "executable": false
     },
     {
