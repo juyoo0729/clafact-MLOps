@@ -41,6 +41,10 @@ The bounded official-value pilot is documented in
 `overlay/docs/reference/23_R3_OFFICIAL_VALUE_PILOT.md`. It verifies current
 KOSIS metadata and values only after an Evidence Cell is resolved, records
 unresolved candidates as HOLD, and does not infer table or Verdict accuracy.
+The full-ledger registry replay is documented in
+`overlay/docs/reference/24_R3_REGISTRY_FULL_VALUE_REPLAY.md`. It joins all
+1,542 Claim IDs, reinforces a provisional composite-signature registry, and
+deduplicates exact official-cell requests while preserving unresolved HOLDs.
 A Korean team handoff is available at
 `output/pdf/CLAFACT_Hard_Guard_KOSIS_연결_방법_20260824.pdf`.
 The same explanation is available as editable Markdown at

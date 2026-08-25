@@ -435,9 +435,9 @@ def _period_is_available(
     period: str,
     rows: Iterable[Mapping[str, object]],
 ) -> bool:
-    expected_frequency = normalize_frequency(period_type)
+    expected_frequency = _kosis_frequency(period_type)
     for row in rows:
-        if normalize_frequency(_text(row.get("PRD_SE"))) != expected_frequency:
+        if _kosis_frequency(_text(row.get("PRD_SE"))) != expected_frequency:
             continue
         exact = _period_digits(row.get("PRD_DE"))
         if exact and exact == period:
@@ -477,7 +477,7 @@ def _matches_coordinate(
         return False
     if _text(row.get("ITM_ID")) != coordinate.item_id:
         return False
-    if normalize_frequency(_text(row.get("PRD_SE"))) != normalize_frequency(
+    if _kosis_frequency(_text(row.get("PRD_SE"))) != _kosis_frequency(
         coordinate.period_type
     ):
         return False
@@ -567,6 +567,13 @@ def _decimal_text(value: object) -> str | None:
 
 def _period_digits(value: object) -> str:
     return re.sub(r"[^0-9]", "", _text(value))
+
+
+def _kosis_frequency(value: object) -> str | None:
+    text = _text(value)
+    if text.casefold() == "a":
+        return "년"
+    return normalize_frequency(text)
 
 
 def _value_hold(

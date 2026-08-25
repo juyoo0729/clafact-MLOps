@@ -1,5 +1,6 @@
 from core.r3_official_value_pilot import (
     PilotTarget,
+    PreparedCoordinate,
     evaluate_official_value_rows,
     prepare_official_coordinate,
     prepare_registered_control_coordinate,
@@ -212,3 +213,46 @@ def test_registered_control_is_revalidated_against_live_item_member_and_period()
     assert coordinate.object_codes == ("0", "00")
     assert coordinate.period_type == "M"
     assert coordinate.period == "202607"
+
+
+def test_kosis_annual_value_response_code_a_matches_internal_year_code_y():
+    coordinate = PreparedCoordinate(
+        target=PilotTarget(
+            claim_id="C-YEAR",
+            split="dev",
+            indicator="총인구",
+            table_id="DT_YEAR",
+            table_name="총인구",
+            org_id="101",
+            catalog_scope="LOCAL_CATALOG",
+            candidate_claim_count=1,
+        ),
+        status="COORDINATE_READY_FOR_VALUE_FETCH",
+        reason_code="",
+        item_id="T10",
+        item_name="총인구",
+        unit="명",
+        object_codes=("00",),
+        dimension_members=(("A", "지역", "전국"),),
+        period_type="Y",
+        period="2025",
+    )
+
+    result = evaluate_official_value_rows(
+        coordinate,
+        {"unit": "명"},
+        [
+            {
+                "ORG_ID": "101",
+                "TBL_ID": "DT_YEAR",
+                "ITM_ID": "T10",
+                "PRD_SE": "A",
+                "PRD_DE": "2025",
+                "C1": "00",
+                "DT": "51000000",
+                "UNIT_NM": "명",
+            }
+        ],
+    )
+
+    assert result["official_value_status"] == "OFFICIAL_VALUE_FETCHED"

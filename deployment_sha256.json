@@ -1,6 +1,6 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 52,
+  "file_count": 57,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
@@ -88,8 +88,14 @@
     },
     {
       "path": "core/r3_official_value_pilot.py",
-      "sha256": "da06bb2a36da1fbcdacd1a9e39bc1379220084bc33e725724f17b3ded6512cf3",
-      "bytes": 20854,
+      "sha256": "744954b51eabc87a2d8c51e4604c4a01a996429319f9f4550c4a183999ffdda5",
+      "bytes": 21008,
+      "executable": false
+    },
+    {
+      "path": "core/r3_registry_full_value_replay.py",
+      "sha256": "41330648c594d24daefac5770af60ad1c6f0c60d0efd1821bea57b90f1218750",
+      "bytes": 14854,
       "executable": false
     },
     {
@@ -126,6 +132,12 @@
       "path": "docs/reference/23_R3_OFFICIAL_VALUE_PILOT.md",
       "sha256": "c5e44edd70aa6ae5c4544f2483849ab84e23f563b3b87f52c213e5a2a291e554",
       "bytes": 6106,
+      "executable": false
+    },
+    {
+      "path": "docs/reference/24_R3_REGISTRY_FULL_VALUE_REPLAY.md",
+      "sha256": "f9ee5f075ed10129c2fb7a437d63a758163b1585bff51a16035e1120d5df118c",
+      "bytes": 6968,
       "executable": false
     },
     {
@@ -202,8 +214,14 @@
     },
     {
       "path": "tests/unit/test_r3_official_value_pilot.py",
-      "sha256": "b50e1240e61f1c0fdced23b5c68379735ab63c56e7bd1abf1cb4c23488801ce3",
-      "bytes": 6655,
+      "sha256": "0c82774a140bdb68b69eebb696868016fce975164f41b2a16735057667a8b9f1",
+      "bytes": 7867,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_r3_registry_full_value_replay.py",
+      "sha256": "54e1d8eaa14059f22076eb91f2c23e63f83fff471458553056611d7041f8a677",
+      "bytes": 5232,
       "executable": false
     },
     {
@@ -240,6 +258,12 @@
       "path": "tests/unit/test_run_r3_official_value_pilot.py",
       "sha256": "fbd89b948e4fc8de2b37a878e391408c9bb7b2c1b6635416d96b8cee1a6cc469",
       "bytes": 4626,
+      "executable": false
+    },
+    {
+      "path": "tests/unit/test_run_r3_registry_full_value_replay.py",
+      "sha256": "c91bd0ab3c6e028918af7e17b6548a4785d8c3858d740de605494eee3e2bae92",
+      "bytes": 7283,
       "executable": false
     },
     {
@@ -312,6 +336,12 @@
       "path": "tools/run_r3_official_value_pilot.py",
       "sha256": "a8e49a7d4b9583e8c1ac7592dbedf446919ddfe6f059843321133ddf47abccfd",
       "bytes": 20829,
+      "executable": false
+    },
+    {
+      "path": "tools/run_r3_registry_full_value_replay.py",
+      "sha256": "362be10f999a8aa6d29435188ebea25ec8859950a7bd4860af33ed118279058b",
+      "bytes": 35114,
       "executable": false
     }
   ]
