@@ -75,6 +75,7 @@ def run(
     member_codes_json: Path,
     output_dir: Path,
     api_key: str,
+    allow_live_kosis: bool = True,
     metadata_fetcher: Callable[..., Any] = get_meta,
     value_fetcher: Callable[..., Any] = get_parameter_data,
     metadata_cache_paths: Sequence[Path] = (),
@@ -85,7 +86,7 @@ def run(
     concept_sheet_name: str = "03_1542_Concept_전체",
 ) -> dict[str, Any]:
     """Process every joined Claim while calling values only for exact cells."""
-    if not api_key:
+    if allow_live_kosis and not api_key:
         raise RuntimeError("KOSIS_API_KEY_NOT_CONFIGURED")
     if output_dir.exists() and any(output_dir.iterdir()):
         raise FileExistsError(f"output directory is not empty: {output_dir}")
@@ -158,6 +159,8 @@ def run(
     value_cache = _load_value_cache(value_cache_paths)
     limiter = _RateLimiter(requests_per_minute)
     metadata_live_calls = 0
+    metadata_cache_hits = 0
+    metadata_offline_misses = 0
     metadata_snapshots: list[dict[str, object]] = []
     metadata_by_table: dict[tuple[str, str], dict[str, object]] = {}
     metadata_path = output_dir / "metadata_snapshots.jsonl"
@@ -168,7 +171,18 @@ def run(
                 key = (org_id, table_id, meta_type)
                 cached = metadata_cache.get(key)
                 if cached is not None:
+                    metadata_cache_hits += 1
                     snapshot = _snapshot_from_cache(cached)
+                elif not allow_live_kosis:
+                    metadata_offline_misses += 1
+                    snapshot = _offline_cache_miss_snapshot(
+                        request={
+                            "org_id": org_id,
+                            "table_id": table_id,
+                            "meta_type": meta_type,
+                        },
+                        error_code="KOSIS_METADATA_CACHE_MISSING",
+                    )
                 else:
                     limiter.wait()
                     metadata_live_calls += 1
@@ -289,6 +303,7 @@ def run(
 
     value_live_calls = 0
     value_cache_hits = 0
+    value_offline_misses = 0
     value_snapshots: list[dict[str, object]] = []
     value_path = output_dir / "value_snapshots.jsonl"
     with value_path.open("w", encoding="utf-8", newline="") as value_handle:
@@ -300,6 +315,20 @@ def run(
             if cached_value is not None:
                 value_cache_hits += 1
                 snapshot = _snapshot_from_cache(cached_value)
+            elif not allow_live_kosis:
+                value_offline_misses += 1
+                snapshot = _offline_cache_miss_snapshot(
+                    request={
+                        "org_id": coordinate.target.org_id,
+                        "table_id": coordinate.target.table_id,
+                        "item_id": coordinate.item_id,
+                        "period_type": coordinate.period_type,
+                        "start_period": coordinate.period,
+                        "end_period": coordinate.period,
+                        "object_codes": list(coordinate.object_codes),
+                    },
+                    error_code="KOSIS_VALUE_CACHE_MISSING",
+                )
             else:
                 limiter.wait()
                 value_live_calls += 1
@@ -346,11 +375,13 @@ def run(
         "candidate_table_count": len(required_tables),
         "metadata_snapshot_count": len(metadata_snapshots),
         "metadata_live_api_call_count": metadata_live_calls,
-        "metadata_cache_hit_count": len(metadata_snapshots) - metadata_live_calls,
+        "metadata_cache_hit_count": metadata_cache_hits,
+        "metadata_offline_cache_miss_count": metadata_offline_misses,
         "coordinate_ready_claim_count": len(coordinates_by_claim),
         "unique_official_cell_count": len(claims_by_cell),
         "unique_value_api_call_count": value_live_calls,
         "value_cache_hit_count": value_cache_hits,
+        "value_offline_cache_miss_count": value_offline_misses,
         "official_value_linked_claim_count": sum(
             row["official_value_status"] == "OFFICIAL_VALUE_FETCHED" for row in results
         ),
@@ -363,6 +394,7 @@ def run(
         "table_selection_status": "REGISTERED_OR_PROVISIONAL_UNIQUE_METADATA_ONLY",
         "verdict_status": VERDICT_STATUS,
         "accuracy_status": ACCURACY_STATUS,
+        "execution_mode": "LIVE_KOSIS" if allow_live_kosis else "OFFLINE_CACHE_ONLY",
     }
     _write_csv(output_dir / "claim_value_results.csv", results, RESULT_COLUMNS)
     _write_csv(
@@ -396,7 +428,13 @@ def run(
             "article_text": "EXCLUDED_NOT_READ",
             "article_url": "EXCLUDED_NOT_READ",
         },
-        "secrets": {"kosis_api_key": "PRESENT_NOT_RECORDED"},
+        "secrets": {
+            "kosis_api_key": (
+                "PRESENT_NOT_RECORDED"
+                if allow_live_kosis
+                else "ABSENT_OFFLINE_CACHE_ONLY"
+            )
+        },
         "outputs": {
             name: _file_record(output_dir / name)
             for name in (
@@ -559,6 +597,20 @@ def _snapshot_from_cache(row: Mapping[str, object]) -> dict[str, object]:
     snapshot = dict(row)
     snapshot["retrieval_source"] = "LOCAL_CACHE_REUSED"
     return snapshot
+
+
+def _offline_cache_miss_snapshot(
+    *, request: Mapping[str, object], error_code: str
+) -> dict[str, object]:
+    return {
+        "request": dict(request),
+        "retrieved_at": _now(),
+        "retrieval_source": "OFFLINE_CACHE_ONLY",
+        "status": "HOLD",
+        "error_code": error_code,
+        "response_sha256": "",
+        "response": [],
+    }
 
 
 def _fetch_metadata_snapshot(
@@ -857,10 +909,10 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--requests-per-minute", type=float, default=150)
     parser.add_argument("--catalog-top-k", type=int, default=5)
-    parser.add_argument("--allow-live-kosis", action="store_true")
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--allow-live-kosis", action="store_true")
+    mode.add_argument("--offline-cache-only", action="store_true")
     args = parser.parse_args()
-    if not args.allow_live_kosis:
-        raise RuntimeError("LIVE_KOSIS_APPROVAL_FLAG_REQUIRED")
     settings = Settings()
     summary = run(
         ledger_xlsx=args.ledger_xlsx,
@@ -874,6 +926,7 @@ def main() -> int:
         value_cache_paths=args.value_cache_jsonl,
         output_dir=args.output_dir,
         api_key=settings.kosis_api_key or "",
+        allow_live_kosis=args.allow_live_kosis,
         requests_per_minute=args.requests_per_minute,
         catalog_top_k=args.catalog_top_k,
     )

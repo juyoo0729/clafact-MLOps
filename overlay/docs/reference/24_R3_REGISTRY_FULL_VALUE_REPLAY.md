@@ -55,6 +55,7 @@ alias만 맞는다고 사용하지 않고 `calculation_types`와 `comparison_typ
 - 1,542 원장과 Concept 원장은 Claim ID로 전수 조인한다.
 - 기사 문장과 API 키 값은 결과에 기록하지 않는다.
 - cached official response는 동일 셀 재실행에 재사용한다.
+- offline cache-only 실행은 API 키가 없어도 외부 호출 없이 끝나며, cache miss를 `HOLD`로 남긴다.
 
 첫 전체 실행에서 KOSIS 연간 응답의 `PRD_SE=A`를 내부 연간 코드 `Y`와 다르다고 판단하는
 문제가 발견됐다. 기대 동작 테스트를 추가한 뒤 `A`와 `Y`를 같은 연간 주기로 정규화했다.
@@ -64,13 +65,13 @@ alias만 맞는다고 사용하지 않고 `calculation_types`와 `comparison_typ
 등록 profile의 계산·비교 계약을 강제했다. 연결 수가 줄더라도 의미가 다른 값을 연결하지 않는
 최종 결과를 채택했다.
 
-## 4. 최종 v3 결과
+## 4. 2026-08-25 전체 1,542건 재현 결과
 
 | 항목 | 결과 |
 |---|---:|
 | 전체 입력 Claim | 1,542 |
 | Concept ID 조인 | 1,542 |
-| 복합 registry signature | 1,016 |
+| 복합 registry signature | 1,018 |
 | 후보 고유 KOSIS 표 | 233 |
 | ITM/PRD metadata snapshot | 466 |
 | 좌표 확정 Claim | 202 |
@@ -84,7 +85,7 @@ Registry signature 상태는 다음과 같다.
 |---|---:|
 | `REGISTERED_COORDINATE_VALIDATED` | 25 |
 | `PROVISIONAL_UNIQUE_METADATA_REGISTRY` | 122 |
-| `HOLD_REGISTRY_UNRESOLVED` | 869 |
+| `HOLD_REGISTRY_UNRESOLVED` | 871 |
 
 좌표 처리 결과는 다음과 같다.
 
@@ -100,13 +101,13 @@ Registry signature 상태는 다음과 같다.
 | reason code | Claim 수 |
 |---|---:|
 | `MULTIPLE_OFFICIAL_COORDINATES_READY` | 257 |
-| `EVIDENCE_ITEM_UNRESOLVED` | 236 |
-| `EVIDENCE_DIMENSION_UNRESOLVED` | 225 |
-| `EVIDENCE_PERIOD_UNRESOLVED` | 198 |
-| `NO_REGISTRY_CANDIDATE` | 182 |
+| `EVIDENCE_ITEM_UNRESOLVED` | 235 |
+| `EVIDENCE_DIMENSION_UNRESOLVED` | 223 |
+| `EVIDENCE_PERIOD_UNRESOLVED` | 192 |
+| `NO_REGISTRY_CANDIDATE` | 194 |
 | `CONCEPT_REGISTRY_NOT_READY` | 135 |
 | `UNIT_CONFLICT` | 122 |
-| `EVIDENCE_ITEM_AMBIGUOUS` | 84 |
+| `EVIDENCE_ITEM_AMBIGUOUS` | 81 |
 | `TIME_NOT_AVAILABLE` | 13 |
 | `KOSIS_VALUE_INVALID_RESPONSE` | 5 |
 
@@ -114,11 +115,26 @@ Registry signature 상태는 다음과 같다.
 
 최초 전체 실행은 고유 표 233개의 ITM/PRD metadata를 표 단위로 중복 제거했다. 이전 snapshot
 44개를 재사용하고 422회 실시간 metadata 호출을 수행했다. 좌표가 준비된 동일 Evidence Cell을
-묶어 91회 공식값 호출로 전체 Claim에 재사용했다.
+묶어 공식값 호출 결과를 전체 Claim에 재사용했다.
 
-최종 v3는 같은 날 받은 metadata 466개와 값 snapshot 85개를 검증 후 재사용하고, 새로 달라진
-Evidence Cell 9개만 실시간 호출했다. 최종 원장의 94개 고유 Evidence Cell 모두 실제 KOSIS
-응답 또는 명시적 API 오류로 기록됐다.
+2026-08-25 재현 실행은 두 단계로 수행했다.
+
+1. `--offline-cache-only`: metadata 466개와 공식값 91개를 재사용하고, 공식값 cache miss
+   3개를 외부 호출 없이 `KOSIS_VALUE_CACHE_MISSING`으로 기록했다.
+2. `--allow-live-kosis`: 같은 cache를 재사용하여 metadata 실호출은 0회, 공식값 실호출은
+   누락된 고유 좌표 3회만 수행했다.
+
+세 좌표는 KOSIS 오류코드 30(해당 조건에 조회 데이터 없음)을 반환했다. 이 좌표를 공유한
+5개 Claim은 `KOSIS_VALUE_INVALID_RESPONSE`로 유지했고, 임의의 다른 표나 기간으로 대체하지
+않았다. 특히 `LOCAL_CATALOG` 후보가 일반적인 `취업자 수` Claim을 산재보상 취업자 비율표 또는
+학교 졸업자수 표에 연결한 사례였으므로, 공식값 85건보다 통과 수를 부풀리지 않는 것이 맞다.
+
+### 실행 모드 선택
+
+- 네트워크 없이 재현: `--offline-cache-only`
+- cache miss만 실제 KOSIS 조회: `--allow-live-kosis`
+- 두 모드는 동시에 사용할 수 없으며 반드시 하나를 지정한다.
+- live 모드에서만 `KOSIS_API_KEY`가 필요하다. 키 값은 manifest·JSONL·Excel에 기록하지 않는다.
 
 산출물은 다음을 포함한다.
 

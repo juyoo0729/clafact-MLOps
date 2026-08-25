@@ -45,6 +45,8 @@ The full-ledger registry replay is documented in
 `overlay/docs/reference/24_R3_REGISTRY_FULL_VALUE_REPLAY.md`. It joins all
 1,542 Claim IDs, reinforces a provisional composite-signature registry, and
 deduplicates exact official-cell requests while preserving unresolved HOLDs.
+It supports explicit `--offline-cache-only` reproducibility and
+`--allow-live-kosis` cache-miss lookup modes.
 The D1 structure-metadata replay is documented in
 `overlay/docs/reference/25_D1_METADATA_FAILURE_REPLAY.md`. It freezes the exact
 failure cohort from one execution history and wires live KOSIS table search

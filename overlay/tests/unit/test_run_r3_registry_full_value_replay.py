@@ -143,6 +143,9 @@ def test_full_runner_joins_all_claims_and_deduplicates_value_calls(tmp_path):
 
     replay_output = tmp_path / "replay_output"
 
+    def unexpected_metadata_call(*args, **kwargs):
+        raise AssertionError("cached official metadata must not be called again")
+
     def unexpected_value_call(*args, **kwargs):
         raise AssertionError("cached official cell must not be called again")
 
@@ -155,8 +158,9 @@ def test_full_runner_joins_all_claims_and_deduplicates_value_calls(tmp_path):
         registered_coordinates_json=coordinates,
         member_codes_json=members,
         output_dir=replay_output,
-        api_key="SECRET_MUST_NOT_BE_RECORDED",
-        metadata_fetcher=metadata_fetcher,
+        api_key="",
+        allow_live_kosis=False,
+        metadata_fetcher=unexpected_metadata_call,
         value_fetcher=unexpected_value_call,
         metadata_cache_paths=[output / "metadata_snapshots.jsonl"],
         value_cache_paths=[output / "value_snapshots.jsonl"],
@@ -164,5 +168,33 @@ def test_full_runner_joins_all_claims_and_deduplicates_value_calls(tmp_path):
     )
 
     assert replay_summary["official_value_linked_claim_count"] == 2
+    assert replay_summary["metadata_live_api_call_count"] == 0
     assert replay_summary["unique_value_api_call_count"] == 0
     assert replay_summary["value_cache_hit_count"] == 1
+    manifest = json.loads((replay_output / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["secrets"]["kosis_api_key"] == "ABSENT_OFFLINE_CACHE_ONLY"
+
+    missing_value_cache = tmp_path / "missing_value_cache.jsonl"
+    missing_value_cache.write_text("", encoding="utf-8")
+    missing_output = tmp_path / "missing_output"
+    missing_summary = run(
+        ledger_xlsx=ledger,
+        concept_xlsx=concepts,
+        candidate_attachment_csv=candidates,
+        candidate_identity_jsonl=identities,
+        catalog_json=catalog,
+        registered_coordinates_json=coordinates,
+        member_codes_json=members,
+        output_dir=missing_output,
+        api_key="",
+        allow_live_kosis=False,
+        metadata_fetcher=unexpected_metadata_call,
+        value_fetcher=unexpected_value_call,
+        metadata_cache_paths=[output / "metadata_snapshots.jsonl"],
+        value_cache_paths=[missing_value_cache],
+        requests_per_minute=0,
+    )
+
+    assert missing_summary["unique_value_api_call_count"] == 0
+    assert missing_summary["value_offline_cache_miss_count"] == 1
+    assert missing_summary["official_value_linked_claim_count"] == 0
