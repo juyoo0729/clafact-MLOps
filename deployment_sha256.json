@@ -1,6 +1,6 @@
 {
   "schema_version": "clafact_flyhermes_overlay_v1",
-  "file_count": 67,
+  "file_count": 70,
   "files": [
     {
       "path": "config/hermes/clafact_autonomous_mlops_loop_master_prompt.md",
@@ -165,6 +165,12 @@
       "executable": false
     },
     {
+      "path": "docs/reference/27_CATEGORIES_1_2_SIXW_EXECUTION.md",
+      "sha256": "c96e294efb546c01cc98a4d53a98672081f4342cd8d3d1a2694b6c6de1291615",
+      "bytes": 6791,
+      "executable": false
+    },
+    {
       "path": "tests/goldset/fixtures/pilot20_r2_frozen_gold_claims_v1.json",
       "sha256": "54e8232518c723fe2723b39b65237e4e69181b54b42cd1c41d51852cb36a326f",
       "bytes": 13266,
@@ -267,6 +273,12 @@
       "executable": false
     },
     {
+      "path": "tests/unit/test_run_claim_categories_1_2_audit.py",
+      "sha256": "12b8f2152ba1981895723dfe56e9402f7ac15d556c73e912516429d7550a936f",
+      "bytes": 6773,
+      "executable": false
+    },
+    {
       "path": "tests/unit/test_run_gold_replay.py",
       "sha256": "1e9ead39f0a5c819141bfc19fe5041f67456a4c40b92e2f18ad5b5d79deaee8c",
       "bytes": 4712,
@@ -318,6 +330,12 @@
       "path": "tools/build_execution_failure_cohort.py",
       "sha256": "836adde85781743d92bd68ee32d26833bdc25fb50a44154ddc4f9277d4c90470",
       "bytes": 1375,
+      "executable": false
+    },
+    {
+      "path": "tools/run_claim_categories_1_2_audit.py",
+      "sha256": "472c626f7d3fcf0ec06ce115686f0129c637078ce809ea496a9fa76b9ddcbb11",
+      "bytes": 42229,
       "executable": false
     },
     {

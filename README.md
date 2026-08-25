@@ -55,6 +55,11 @@ The full-article execution audit is documented in
 `overlay/docs/reference/26_FULL_ARTICLE_EXECUTION_AUDIT.md`. It joins all 499
 source articles to 1,542 Claims and records every stored KOSIS metadata/value
 attempt, response hash, success, HOLD stage, and reason without recording keys.
+The category 1/2 six-W execution is documented in
+`overlay/docs/reference/27_CATEGORIES_1_2_SIXW_EXECUTION.md`. It executes the
+latest 256 context-completion and 339 multi-Claim rows, validates conservative
+period resolution and atomic splitting, and records success/HOLD evidence as
+992 who/when/where/what/how/why events before any new KOSIS call.
 A Korean team handoff is available at
 `output/pdf/CLAFACT_Hard_Guard_KOSIS_연결_방법_20260824.pdf`.
 The same explanation is available as editable Markdown at
