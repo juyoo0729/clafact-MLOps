@@ -37,6 +37,10 @@ The follow-up structural Hard Guard replay is documented in
 `overlay/docs/reference/22_R3_HARD_GUARD_READINESS.md`. It keeps the existing
 Guard unchanged, separates catalog coverage from slot/metadata conflicts, and
 does not treat a surviving candidate as a selected or correct KOSIS table.
+The bounded official-value pilot is documented in
+`overlay/docs/reference/23_R3_OFFICIAL_VALUE_PILOT.md`. It verifies current
+KOSIS metadata and values only after an Evidence Cell is resolved, records
+unresolved candidates as HOLD, and does not infer table or Verdict accuracy.
 A Korean team handoff is available at
 `output/pdf/CLAFACT_Hard_Guard_KOSIS_연결_방법_20260824.pdf`.
 The same explanation is available as editable Markdown at
